@@ -1,18 +1,14 @@
-var myGameArea = {
-    canvas : document.createElement("canvas"),
-    start : function() {
-        this.canvas.width = 1500;
-        this.canvas.height = 800;
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.frameNo = 0;
-        this.interval = setInterval(updateGameArea, 20);
-        },
-    clear : function() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-}
-
 function startGame(){
-    myGameArea.start();
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    //ctx.font = "30px Arial";
+    //ctx.fillText("Hello World",10,50);
+
+    var imgCreatureGoblin = document.getElementById("CreatureGoblinImage");
+
+
+    var handImageSizeX = 160;
+    var handImageSizeY = handImageSizeX * Math.sqrt(2);
+
+    ctx.drawImage(imgCreatureGoblin, 10, 10, handImageSizeX, handImageSizeY);
 }
