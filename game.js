@@ -2,6 +2,10 @@ function startGame(){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+
     var imgCreatureGoblin = document.getElementById("CreatureGoblinImage");
 
 

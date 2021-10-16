@@ -1,4 +1,10 @@
 canvas {
     border:0px solid #d3d3d3;
     background-color: #8f8f8f;
+    position: absolute; 
+	top: 0; 
+	left: 0; 
+	right: 0; 
+	bottom: 0; 
+    display: block;
 }
