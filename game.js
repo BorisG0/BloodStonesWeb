@@ -16,6 +16,10 @@ function startGame(){
     const goblinCard = new Card("goblin", document.getElementById("CreatureGoblinImage"));
 
     drawCard(goblinCard,10,10,130);
+
+    const player1 = new Player("kek");
+
+    //drawCard(player1.card1, 200, 10 , 130);
     
 
     drawActiveHand();
@@ -51,6 +55,7 @@ class Card{
     constructor(name, image){
         this.name = name;
         this.image = image;
+        
 
     }
 }
@@ -59,4 +64,5 @@ class Player{
     constructor(name){
         this.name = name;
     }
+
 }
