@@ -22,6 +22,7 @@ function startGame(){
     //drawCard(player1.hand[0], 0, 500, 130);
 
     drawActiveHand(player1.hand);
+    drawPassiveHand(player2.hand);
     
 }
 
@@ -34,10 +35,19 @@ function drawActiveHand(hand){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
-    ctx.font = '50px serif';
-
     for(let i = 0; i < hand.length; i++){
         drawCard(hand[i], (handCardSize + handCardGap ) * i + handCardGap, canvas.height - handCardSize * Math.sqrt(2) - handCardGap, handCardSize);
+    }
+}
+
+function drawPassiveHand(hand){
+
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    for(let i = 0; i < hand.length; i++){
+        //drawCard(hand[i], (handCardSize + handCardGap ) * i + handCardGap, canvas.height - handCardSize * Math.sqrt(2) - handCardGap, handCardSize);
+        ctx.drawImage(document.getElementById("BackSideImage"), (handCardSize + handCardGap ) * i + handCardGap, handCardGap, handCardSize, handCardSize * Math.sqrt(2));
     }
 }
 
@@ -68,6 +78,7 @@ class Player{
     constructor(name){
         this.name = name;
         this.hand = [];
+        this.hand.push(new CardGoblin());
         this.hand.push(new CardGoblin());
         this.hand.push(new CardGoblin());
     }
