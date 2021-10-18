@@ -15,32 +15,34 @@ function startGame(){
 
     const goblinCard = new Card("goblin", document.getElementById("CreatureGoblinImage"));
 
-    drawCard(goblinCard,10,10,130);
+    //drawCard(goblinCard,10,10,130);
 
     const player1 = new Player("kek");
 
-    drawCard(player1.cards[0], 200, 10 , 130);
-    
+    //ctx.fillText(player1.hand[0].name, 100, 100)
+    //drawCard(player1.hand[0], 0, 500, 130);
 
-    //drawActiveHand();
+    var pHand = player1.hand;
+
+    drawActiveHand(player1.hand);
     
 }
 
+var handCardSize = 130;
 
-function drawActiveHand(){
+function drawActiveHand(hand){
 
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
-    var imgCreatureGoblin = document.getElementById("CreatureGoblinImage");
-    var handCardSizeX = 130;
-    var handCardSizeY = handCardSizeX * Math.sqrt(2);
+    ctx.font = '50px serif';
 
+    for(let i = 0; i < hand.length; i++){
+        drawCard(hand[i], handCardSize * i, 500, handCardSize);
+    }
 
-    ctx.drawImage(goblinCard.image, 0, canvas.height-handCardSizeY,handCardSizeX, handCardSizeY);
-    ctx.fillText("goblinCard.name", 0 ,0 ,100 ,100 );
+    
 
-    drawCard(goblinCard, 0, canvas.height-handCardSizeY,handCardSizeX);
 }
 
 function drawCard(card, x, y, size){
@@ -63,8 +65,11 @@ class Card{
 class Player{
     constructor(name){
         this.name = name;
-        this.cards = [];
-        this.cards.push(new Card("goblin2", document.getElementById("CreatureGoblinImage")))
+        this.hand = [];
+        this.hand.push(new Card("goblin2", document.getElementById("CreatureGoblinImage")));
+        this.hand.push(new Card("goblin3", document.getElementById("CreatureGoblinImage")));
+        this.hand.push(new Card("goblin4", document.getElementById("CreatureGoblinImage")));
+        this.hand.push(new Card("goblin5", document.getElementById("CreatureGoblinImage")));
     }
 
 }
