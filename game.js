@@ -22,8 +22,6 @@ function startGame(){
     //ctx.fillText(player1.hand[0].name, 100, 100)
     //drawCard(player1.hand[0], 0, 500, 130);
 
-    var pHand = player1.hand;
-
     drawActiveHand(player1.hand);
     
 }
@@ -54,11 +52,17 @@ function drawCard(card, x, y, size){
 
 
 class Card{
-    constructor(name, image){
+    constructor(name, image, cost){
         this.name = name;
         this.image = image;
-        
+        this.cost = cost;
 
+    }
+}
+
+class CardGoblin extends Card{
+    constructor(){
+        super("goblin", document.getElementById("CreatureGoblinImage"), 2);
     }
 }
 
@@ -66,10 +70,8 @@ class Player{
     constructor(name){
         this.name = name;
         this.hand = [];
-        this.hand.push(new Card("goblin2", document.getElementById("CreatureGoblinImage")));
-        this.hand.push(new Card("goblin3", document.getElementById("CreatureGoblinImage")));
-        this.hand.push(new Card("goblin4", document.getElementById("CreatureGoblinImage")));
-        this.hand.push(new Card("goblin5", document.getElementById("CreatureGoblinImage")));
+        this.hand.push(new CardGoblin());
+        this.hand.push(new CardGoblin());
     }
 
 }
