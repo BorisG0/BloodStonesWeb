@@ -81,6 +81,7 @@ class Player{
         this.hand.push(new CardGoblin());
         this.hand.push(new CardGoblin());
         this.hand.push(new CardGoblin());
+        this.creatures = [];
     }
 
 }
