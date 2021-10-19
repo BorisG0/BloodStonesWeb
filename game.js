@@ -1,9 +1,12 @@
 var handCardSize = 140;
+var handCardSizeY = handCardSize * Math.sqrt(2);
 var handCardGap = 5;
 var creatureSize = 110;
+var creatureSizeY = creatureSize * Math.sqrt(2);
 var creatureGap = 10;
 var player1, player2;
 var canvas, ctx;
+var selectedHandCard = -1;
 
 
 function startGame(){
@@ -28,20 +31,29 @@ function startGame(){
 
     //ctx.fillText(player1.hand[0].name, 100, 100)
     //drawCard(player1.hand[0], 0, 500, 130);
+    repaint();
+    
+}
 
+
+function repaint(){
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     drawActiveHand(player1.hand);
     drawPassiveHand(player2.hand);
     drawActiveCreatures(player1.creatures);
     drawPassiveCreatures(player2.creatures);
-    
+    if(selectedHandCard != -1) drawHandCardSelection();
 }
 
+function drawHandCardSelection(){
+    ctx.drawImage(document.getElementById("SelectedImage"), handCardGap + selectedHandCard * (handCardSize + handCardGap), canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
+}
 
 
 function drawActiveHand(hand){
 
     for(let i = 0; i < hand.length; i++){
-        drawCard(hand[i], (handCardSize + handCardGap ) * i + handCardGap, canvas.height - handCardSize * Math.sqrt(2) - handCardGap, handCardSize);
+        drawCard(hand[i], (handCardSize + handCardGap ) * i + handCardGap, canvas.height - handCardSizeY - handCardGap, handCardSize);
     }
 }
 
@@ -49,21 +61,21 @@ function drawPassiveHand(hand){
 
     for(let i = 0; i < hand.length; i++){
         //drawCard(hand[i], (handCardSize + handCardGap ) * i + handCardGap, canvas.height - handCardSize * Math.sqrt(2) - handCardGap, handCardSize);
-        ctx.drawImage(document.getElementById("BackSideImage"), (handCardSize + handCardGap ) * i + handCardGap, handCardGap, handCardSize, handCardSize * Math.sqrt(2));
+        ctx.drawImage(document.getElementById("BackSideImage"), (handCardSize + handCardGap ) * i + handCardGap, handCardGap, handCardSize, handCardSizeY);
     }
 }
 
 function drawActiveCreatures(creatures){
 
     for(let i = 0; i < creatures.length; i++){
-        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, canvas.height - handCardSize * Math.sqrt(2) - handCardGap - creatureSize * Math.sqrt(2) - creatureGap, creatureSize);
+        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize);
     }
 }
 
 function drawPassiveCreatures(creatures){
 
     for(let i = 0; i < creatures.length; i++){
-        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, handCardSize * Math.sqrt(2) + handCardGap + creatureGap, creatureSize);
+        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, handCardSizeY + handCardGap + creatureGap, creatureSize);
     }
 }
 
@@ -76,12 +88,16 @@ function drawCreature(creature, x, y, size){
 }
 
 function mouseClicked(event){
-    
-
     var x = event.clientX;     // Get the horizontal coordinate
     var y = event.clientY;     // Get the vertical coordinate
 
-    ctx.drawImage(document.getElementById("CardGoblinImage"), x, y, 200, 200 * Math.sqrt(2));
+    //ctx.drawImage(document.getElementById("CardGoblinImage"), x, y, 200, 200 * Math.sqrt(2));
+
+    if(y >= (canvas.height - handCardSize * Math.sqrt(2) - handCardGap)){
+        selectedHandCard = Math.trunc(x / (handCardSize + handCardGap));
+        
+    }
+    repaint();
 }
 
 class Card{
