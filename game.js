@@ -89,6 +89,17 @@ function drawCreature(creature, x, y, size){
     ctx.drawImage(creature.image, x, y, size, size * Math.sqrt(2));
 }
 
+function mouseClicked(event){
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    
+
+    var x = event.clientX;     // Get the horizontal coordinate
+    var y = event.clientY;     // Get the vertical coordinate
+
+    ctx.drawImage(document.getElementById("CardGoblinImage"), x, y, 200, 200 * Math.sqrt(2));
+}
 
 class Card{
     constructor(name, image, cost){
