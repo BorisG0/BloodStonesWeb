@@ -7,7 +7,7 @@ var creatureGap = 10;
 var player1, player2;
 var activePlayer, passivePlayer;
 var canvas, ctx;
-var selectedHandCard = -1;
+var selectedHandCardInt = -1, prevSelectedHandCardInt;
 var turnStatus = 1; //1 = mid turn,   0 = between turns
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -46,6 +46,8 @@ function startGame(){
 
 function endTurn(){
     turnStatus = 0;
+    selectedHandCardInt = -1;
+    prevSelectedHandCardInt = -1;
 }
 
 function nextTurn(){
@@ -66,7 +68,7 @@ function repaint(){
         drawPassiveHand(passivePlayer.hand);
         drawActiveCreatures(activePlayer.creatures);
         drawPassiveCreatures(passivePlayer.creatures);
-        if(selectedHandCard != -1) drawHandCardSelection();
+        if(selectedHandCardInt != -1) drawHandCardSelection();
 
         ctx.drawImage(document.getElementById("EndTurnImage"), 0, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
@@ -77,7 +79,7 @@ function repaint(){
 }
 
 function drawHandCardSelection(){
-    ctx.drawImage(document.getElementById("SelectedImage"), handCardGap + selectedHandCard * (handCardSize + handCardGap), canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
+    ctx.drawImage(document.getElementById("SelectedImage"), handCardGap + selectedHandCardInt * (handCardSize + handCardGap), canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
 }
 
 
@@ -125,7 +127,9 @@ function mouseClicked(event){
     //ctx.drawImage(document.getElementById("CardGoblinImage"), x, y, 200, 200 * Math.sqrt(2));
 
     if(y >= (canvas.height - handCardSize * Math.sqrt(2) - handCardGap)){ //handcards clicked
-        selectedHandCard = Math.trunc(x / (handCardSize + handCardGap));
+        selectedHandCardInt = Math.trunc(x / (handCardSize + handCardGap));
+        if((selectedHandCardInt > activePlayer.hand.length - 1) || selectedHandCardInt == prevSelectedHandCardInt) selectedHandCardInt = -1;
+        prevSelectedHandCardInt = selectedHandCardInt;
         
     }
 
