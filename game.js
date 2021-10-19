@@ -5,8 +5,12 @@ var creatureSize = 110;
 var creatureSizeY = creatureSize * Math.sqrt(2);
 var creatureGap = 10;
 var player1, player2;
+var activePlayer, passivePlayer;
 var canvas, ctx;
 var selectedHandCard = -1;
+var turnStatus = 1; //1 = mid turn,   0 = between turns
+var turnButtonSize = 150;
+var turnButtonSizeY = turnButtonSize / 2;
 
 
 function startGame(){
@@ -28,6 +32,10 @@ function startGame(){
 
     player1 = new Player("kek");
     player2 = new Player("lol");
+    player1.hand.push(new CardGoblin());
+
+    activePlayer = player1;
+    passivePlayer = player2;
 
     //ctx.fillText(player1.hand[0].name, 100, 100)
     //drawCard(player1.hand[0], 0, 500, 130);
@@ -36,13 +44,36 @@ function startGame(){
 }
 
 
+function endTurn(){
+    turnStatus = 0;
+}
+
+function nextTurn(){
+    turnStatus = 1;
+    var p = activePlayer;
+    activePlayer = passivePlayer;
+    passivePlayer = p;
+}
+
+
 function repaint(){
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    drawActiveHand(player1.hand);
-    drawPassiveHand(player2.hand);
-    drawActiveCreatures(player1.creatures);
-    drawPassiveCreatures(player2.creatures);
-    if(selectedHandCard != -1) drawHandCardSelection();
+    
+
+    if(turnStatus == 1){
+
+        drawActiveHand(activePlayer.hand);
+        drawPassiveHand(passivePlayer.hand);
+        drawActiveCreatures(activePlayer.creatures);
+        drawPassiveCreatures(passivePlayer.creatures);
+        if(selectedHandCard != -1) drawHandCardSelection();
+
+        ctx.drawImage(document.getElementById("EndTurnImage"), 0, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+    }
+
+    if(turnStatus == 0){
+        ctx.drawImage(document.getElementById("NextTurnImage"), 0, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+    }
 }
 
 function drawHandCardSelection(){
@@ -93,10 +124,18 @@ function mouseClicked(event){
 
     //ctx.drawImage(document.getElementById("CardGoblinImage"), x, y, 200, 200 * Math.sqrt(2));
 
-    if(y >= (canvas.height - handCardSize * Math.sqrt(2) - handCardGap)){
+    if(y >= (canvas.height - handCardSize * Math.sqrt(2) - handCardGap)){ //handcards clicked
         selectedHandCard = Math.trunc(x / (handCardSize + handCardGap));
         
     }
+
+
+    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) && x < turnButtonSize){ //turnbutton clicked
+        if(turnStatus == 1) endTurn();
+        else nextTurn();
+    }
+
+
     repaint();
 }
 
