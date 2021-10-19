@@ -23,11 +23,15 @@ function startGame(){
 
     drawActiveHand(player1.hand);
     drawPassiveHand(player2.hand);
+    drawActiveCreatures(player1.creatures);
+    drawPassiveCreatures(player2.creatures);
     
 }
 
-var handCardSize = 130;
+var handCardSize = 140;
 var handCardGap = 5;
+var creatureSize = 110;
+var creatureGap = 10;
 var player1, player2;
 
 function drawActiveHand(hand){
@@ -51,11 +55,38 @@ function drawPassiveHand(hand){
     }
 }
 
+function drawActiveCreatures(creatures){
+
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    for(let i = 0; i < creatures.length; i++){
+        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, canvas.height - handCardSize * Math.sqrt(2) - handCardGap - creatureSize * Math.sqrt(2) - creatureGap, creatureSize);
+    }
+}
+
+function drawPassiveCreatures(creatures){
+
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    for(let i = 0; i < creatures.length; i++){
+        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, handCardSize * Math.sqrt(2) + handCardGap + creatureGap, creatureSize);
+    }
+}
+
 function drawCard(card, x, y, size){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
     ctx.drawImage(card.image, x, y, size, size * Math.sqrt(2));
+}
+
+function drawCreature(creature, x, y, size){
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    ctx.drawImage(creature.image, x, y, size, size * Math.sqrt(2));
 }
 
 
@@ -68,9 +99,24 @@ class Card{
     }
 }
 
+class Creature{
+    constructor(name, image, attack, defense){
+        this.name = name;
+        this.image = image;
+        this.attack = attack;
+        this.defense = defense;
+    }
+}
+
 class CardGoblin extends Card{
     constructor(){
-        super("goblin", document.getElementById("CardGoblinImage"), 2);
+        super("CardGoblin", document.getElementById("CardGoblinImage"), 2);
+    }
+}
+
+class CreatureGoblin extends Creature{
+    constructor(){
+        super("Goblin", document.getElementById("CreatureGoblinImage"), 1, 2);
     }
 }
 
@@ -81,7 +127,10 @@ class Player{
         this.hand.push(new CardGoblin());
         this.hand.push(new CardGoblin());
         this.hand.push(new CardGoblin());
+
         this.creatures = [];
+        this.creatures.push(new CreatureGoblin());
+        this.creatures.push(new CreatureGoblin());
     }
 
 }
