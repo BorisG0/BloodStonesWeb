@@ -1,7 +1,7 @@
-var handCardSize = 140;
+var handCardSize = 160;
 var handCardSizeY = handCardSize * Math.sqrt(2);
 var handCardGap = 5;
-var creatureSize = 110;
+var creatureSize = 140;
 var creatureSizeY = creatureSize * Math.sqrt(2);
 var creatureGap = 10;
 var player1, player2;
@@ -48,7 +48,7 @@ function startGame(){
 function endTurn(){
     turnStatus = 0;
     selectedHandCardInt = -1;
-    prevSelectedHandCardInt = -1;
+    selectedActiveCreatureInt = -1;
 }
 
 function nextTurn(){
@@ -72,11 +72,11 @@ function repaint(){
         if(selectedHandCardInt != -1) drawHandCardSelection();
         if(selectedActiveCreatureInt != -1) drawActiveCreatureSelection();
 
-        ctx.drawImage(document.getElementById("EndTurnImage"), 0, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+        ctx.drawImage(document.getElementById("EndTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
     if(turnStatus == 0){
-        ctx.drawImage(document.getElementById("NextTurnImage"), 0, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+        ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 }
 
@@ -132,8 +132,6 @@ function mouseClicked(event){
     var x = event.clientX;     // Get the horizontal coordinate
     var y = event.clientY;     // Get the vertical coordinate
 
-    //ctx.drawImage(document.getElementById("CardGoblinImage"), x, y, 200, 200 * Math.sqrt(2));
-
     if(y >= (canvas.height - handCardSizeY - handCardGap)){ //handcards clicked
         var selectedHandCardIntTemp = Math.trunc(x / (handCardSize + handCardGap));
         if(!(selectedHandCardIntTemp > activePlayer.hand.length - 1)){
@@ -160,7 +158,7 @@ function mouseClicked(event){
     }
 
 
-    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) && x < turnButtonSize){ //turnbutton clicked
+    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) && x > canvas.width - turnButtonSize){ //turnbutton clicked
         if(turnStatus == 1) endTurn();
         else nextTurn();
     }
