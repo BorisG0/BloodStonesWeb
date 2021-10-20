@@ -78,16 +78,17 @@ function repaint(){
         ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 6;
-    ctx.beginPath();
-    ctx.moveTo(canvas.width/2 - 3, 0);
-    ctx.lineTo(canvas.width/2 - 3, canvas.height);
-    ctx.stroke();
+    // ctx.strokeStyle = 'red';
+    // ctx.lineWidth = 6;
+    // ctx.beginPath();
+    // ctx.moveTo(canvas.width/2 - 3, 0);
+    // ctx.lineTo(canvas.width/2 - 3, canvas.height);
+    // ctx.stroke();
 }
 
 function drawHandCardSelection(){
-    ctx.drawImage(document.getElementById("SelectedImage"), handCardGap + selectedHandCardInt * (handCardSize + handCardGap), canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
+    ctx.drawImage(document.getElementById("SelectedImage"), (canvas.width/2) - (activePlayer.hand.length * (handCardSize + handCardGap) / 2) + selectedHandCardInt * (handCardSize + handCardGap),
+     canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
 }
 
 function drawActiveCreatureSelection(){
@@ -145,18 +146,25 @@ function mouseClicked(event){
     var x = event.clientX;     // Get the horizontal coordinate
     var y = event.clientY;     // Get the vertical coordinate
 
-    activePlayer.hand.push(new CardGoblin());
+    
 
     if(y >= (canvas.height - handCardSizeY - handCardGap)){ //handcards clicked
-        var selectedHandCardIntTemp = Math.trunc(x / (handCardSize + handCardGap));
-        if(!(selectedHandCardIntTemp > activePlayer.hand.length - 1)){
-            if(selectedHandCardInt == selectedHandCardIntTemp){
-                selectedHandCardInt = -1;
-            }else{
-                selectedHandCardInt = selectedHandCardIntTemp;
-                selectedActiveCreatureInt = -1;
+        if((x >= canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2) 
+            && (x <= canvas.width/2 + activePlayer.hand.length * (handCardSize + handCardGap)/2)){
+
+                
+            var selectedHandCardIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap)/2 )) / (handCardSize + handCardGap) );
+
+            if(!(selectedHandCardIntTemp > activePlayer.hand.length - 1)){
+                if(selectedHandCardInt == selectedHandCardIntTemp){
+                    selectedHandCardInt = -1;
+                }else{
+                    selectedHandCardInt = selectedHandCardIntTemp;
+                    selectedActiveCreatureInt = -1;
+                }
             }
         }
+        
         
     }
 
@@ -180,6 +188,7 @@ function mouseClicked(event){
 
 
     repaint();
+    //activePlayer.hand.push(new CardGoblin());
 }
 
 class Card{
@@ -216,6 +225,8 @@ class Player{
     constructor(name){
         this.name = name;
         this.hand = [];
+        this.hand.push(new CardGoblin());
+        this.hand.push(new CardGoblin());
         this.hand.push(new CardGoblin());
 
 
