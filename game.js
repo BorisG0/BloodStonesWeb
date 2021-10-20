@@ -7,7 +7,8 @@ var creatureGap = 10;
 var player1, player2;
 var activePlayer, passivePlayer;
 var canvas, ctx;
-var selectedHandCardInt = -1, prevSelectedHandCardInt;
+var selectedHandCardInt = -1;
+var selectedActiveCreatureInt = -1;
 var turnStatus = 1; //1 = mid turn,   0 = between turns
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -69,6 +70,7 @@ function repaint(){
         drawActiveCreatures(activePlayer.creatures);
         drawPassiveCreatures(passivePlayer.creatures);
         if(selectedHandCardInt != -1) drawHandCardSelection();
+        if(selectedActiveCreatureInt != -1) drawActiveCreatureSelection();
 
         ctx.drawImage(document.getElementById("EndTurnImage"), 0, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
@@ -80,6 +82,12 @@ function repaint(){
 
 function drawHandCardSelection(){
     ctx.drawImage(document.getElementById("SelectedImage"), handCardGap + selectedHandCardInt * (handCardSize + handCardGap), canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
+}
+
+function drawActiveCreatureSelection(){
+    ctx.drawImage(document.getElementById("SelectedImage"), creatureGap + selectedActiveCreatureInt * (creatureSize + creatureGap),
+     canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap,
+      creatureSize, creatureSizeY);
 }
 
 
@@ -126,11 +134,29 @@ function mouseClicked(event){
 
     //ctx.drawImage(document.getElementById("CardGoblinImage"), x, y, 200, 200 * Math.sqrt(2));
 
-    if(y >= (canvas.height - handCardSize * Math.sqrt(2) - handCardGap)){ //handcards clicked
-        selectedHandCardInt = Math.trunc(x / (handCardSize + handCardGap));
-        if((selectedHandCardInt > activePlayer.hand.length - 1) || selectedHandCardInt == prevSelectedHandCardInt) selectedHandCardInt = -1;
-        prevSelectedHandCardInt = selectedHandCardInt;
+    if(y >= (canvas.height - handCardSizeY - handCardGap)){ //handcards clicked
+        var selectedHandCardIntTemp = Math.trunc(x / (handCardSize + handCardGap));
+        if(!(selectedHandCardIntTemp > activePlayer.hand.length - 1)){
+            if(selectedHandCardInt == selectedHandCardIntTemp){
+                selectedHandCardInt = -1;
+            }else{
+                selectedHandCardInt = selectedHandCardIntTemp;
+                selectedActiveCreatureInt = -1;
+            }
+        }
         
+    }
+
+    if((y >= (canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap)) && y <= canvas.height - handCardSizeY - handCardGap){ //active creatures clicked
+        var selectedActiveCreatureIntTemp = Math.trunc(x / (creatureSize + creatureGap));
+        if(!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)){
+            if(selectedActiveCreatureInt == selectedActiveCreatureIntTemp){
+                selectedActiveCreatureInt = -1;
+            }else{
+                selectedActiveCreatureInt = selectedActiveCreatureIntTemp;
+                selectedHandCardInt = -1;
+            }
+        } 
     }
 
 
