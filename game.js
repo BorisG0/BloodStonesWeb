@@ -87,17 +87,16 @@ function repaint(){
 }
 
 function drawHandCardSelection(){
-    ctx.drawImage(document.getElementById("SelectedImage"), (canvas.width/2) - (activePlayer.hand.length * (handCardSize + handCardGap) / 2) + selectedHandCardInt * (handCardSize + handCardGap),
-     canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
+    ctx.drawImage(document.getElementById("SelectedImage"), 
+        (canvas.width/2) - (activePlayer.hand.length * (handCardSize + handCardGap) / 2) + selectedHandCardInt * (handCardSize + handCardGap),
+        canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
 }
 
 function drawActiveCreatureSelection(){
-    ctx.drawImage(document.getElementById("SelectedImage"), creatureGap + selectedActiveCreatureInt * (creatureSize + creatureGap),
-     canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap,
-      creatureSize, creatureSizeY);
+    ctx.drawImage(document.getElementById("SelectedImage"), 
+        (canvas.width/2) - (activePlayer.creatures.length * (creatureSize + creatureGap) / 2) + selectedActiveCreatureInt * (creatureSize + creatureGap),
+        canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize, creatureSizeY);
 }
-
-
 function drawActiveHand(hand){
 
 
@@ -123,14 +122,16 @@ function drawPassiveHand(hand){
 function drawActiveCreatures(creatures){
 
     for(let i = 0; i < creatures.length; i++){
-        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize);
+        drawCard(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+        canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize);
     }
 }
 
 function drawPassiveCreatures(creatures){
 
     for(let i = 0; i < creatures.length; i++){
-        drawCard(creatures[i], (creatureSize + creatureGap ) * i + creatureGap, handCardSizeY + handCardGap + creatureGap, creatureSize);
+        drawCard(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+        handCardSizeY + handCardGap + creatureGap, creatureSize);
     }
 }
 
@@ -169,15 +170,21 @@ function mouseClicked(event){
     }
 
     if((y >= (canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap)) && y <= canvas.height - handCardSizeY - handCardGap){ //active creatures clicked
-        var selectedActiveCreatureIntTemp = Math.trunc(x / (creatureSize + creatureGap));
-        if(!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)){
-            if(selectedActiveCreatureInt == selectedActiveCreatureIntTemp){
-                selectedActiveCreatureInt = -1;
-            }else{
-                selectedActiveCreatureInt = selectedActiveCreatureIntTemp;
-                selectedHandCardInt = -1;
-            }
-        } 
+        if((x >= canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
+            && (x <= canvas.width/2 + activePlayer.creatures.length * (creatureSize + creatureGap)/2)){
+
+                
+            var selectedActiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
+
+            if(!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)){
+                    if(selectedActiveCreatureInt == selectedActiveCreatureIntTemp){
+                        selectedActiveCreatureInt = -1;
+                    }else{
+                        selectedActiveCreatureInt = selectedActiveCreatureIntTemp;
+                        selectedHandCardInt = -1;
+                    }
+                } 
+        }
     }
 
 
