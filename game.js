@@ -1,9 +1,9 @@
-var handCardSize = 160;
+var handCardSize = 150;
 var handCardSizeY = handCardSize * Math.sqrt(2);
-var handCardGap = 5;
-var creatureSize = 140;
+var handCardGap = 10;
+var creatureSize = 110;
 var creatureSizeY = creatureSize * Math.sqrt(2);
-var creatureGap = 10;
+var creatureGap = 5;
 var player1, player2;
 var activePlayer, passivePlayer;
 var canvas, ctx;
@@ -12,6 +12,8 @@ var selectedActiveCreatureInt = -1;
 var turnStatus = 1; //1 = mid turn,   0 = between turns
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
+var castingFieldSize = 200;
+var castingFieldSizeY = castingFieldSize * (3/4);
 
 
 function startGame(){
@@ -44,6 +46,14 @@ function startGame(){
     
 }
 
+function castSelected(){
+    if(selectedHandCardInt != -1){
+        activePlayer.hand[selectedHandCardInt].play();
+        activePlayer.hand.splice(selectedHandCardInt, 1);
+        selectedHandCardInt = -1;
+    }
+}
+
 
 function endTurn(){
     turnStatus = 0;
@@ -72,6 +82,8 @@ function repaint(){
         drawPassiveCreatures(passivePlayer.creatures);
         if(selectedHandCardInt != -1) drawHandCardSelection();
         if(selectedActiveCreatureInt != -1) drawActiveCreatureSelection();
+
+        ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
 
         ctx.drawImage(document.getElementById("EndTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
@@ -190,9 +202,15 @@ function mouseClicked(event){
     }
 
 
-    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) && x > canvas.width - turnButtonSize){ //turnbutton clicked
+    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
+    && x > canvas.width - turnButtonSize){ 
         if(turnStatus == 1) endTurn();
         else nextTurn();
+    }
+
+    if((y >= (canvas.height/2 - castingFieldSizeY/2)) && (y <= (canvas.height/2 + castingFieldSizeY/2))
+     && (x >= (canvas.width/2 - castingFieldSize/2)) && (x <= (canvas.width/2 + castingFieldSize/2))){
+        castSelected();
     }
 
 
@@ -205,6 +223,10 @@ class Card{
         this.name = name;
         this.image = image;
         this.cost = cost;
+
+    }
+
+    play(){
 
     }
 }
@@ -221,6 +243,10 @@ class Creature{
 class CardGoblin extends Card{
     constructor(){
         super("CardGoblin", document.getElementById("CardGoblinImage"), 2);
+    }
+
+    play(){
+        activePlayer.creatures.push(new CreatureGoblin());
     }
 }
 
