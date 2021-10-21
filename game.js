@@ -39,6 +39,7 @@ function startGame(){
 
     //ctx.fillText(player1.hand[0].name, 100, 100)
     //drawCard(player1.hand[0], 0, 500, 130);
+    nextTurn();
     repaint();
     
 }
@@ -55,6 +56,7 @@ function nextTurn(){
     var p = activePlayer;
     activePlayer = passivePlayer;
     passivePlayer = p;
+    activePlayer.drawCard();
 }
 
 
@@ -232,14 +234,23 @@ class Player{
     constructor(name){
         this.name = name;
         this.hand = [];
-        this.hand.push(new CardGoblin());
-        this.hand.push(new CardGoblin());
-        this.hand.push(new CardGoblin());
 
+        this.deck = [];
+        this.deck.push(new CardGoblin());
+        this.deck.push(new CardGoblin());
+        this.deck.push(new CardGoblin());
+        this.deck.push(new CardGoblin());
 
         this.creatures = [];
         this.creatures.push(new CreatureGoblin());
         this.creatures.push(new CreatureGoblin());
+    }
+
+    drawCard(){
+        if(this.deck.length > 0){
+            this.hand.push(this.deck.pop());
+        }
+        
     }
 
 }
