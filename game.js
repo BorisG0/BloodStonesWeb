@@ -202,6 +202,23 @@ function mouseClicked(event){
     }
 
 
+    if((y >= (handCardSizeY + handCardGap + creatureGap)) && y <= handCardSizeY + handCardGap + creatureGap + creatureSizeY){ //passive creatures clicked
+        if((x >= canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
+            && (x <= canvas.width/2 + activePlayer.creatures.length * (creatureSize + creatureGap)/2)){
+
+                
+            var selectedPassiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
+
+
+            
+
+            if(selectedActiveCreatureInt != -1 && selectedPassiveCreatureIntTemp < passivePlayer.creatures.length){
+                activePlayer.creatures[selectedActiveCreatureInt].attackCreature(new Creature());
+            }
+        }
+    }
+
+
     if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
     && x > canvas.width - turnButtonSize){ 
         if(turnStatus == 1) endTurn();
@@ -238,6 +255,17 @@ class Creature{
         this.attack = attack;
         this.defense = defense;
     }
+
+    attackCreature(attackedCreature){
+        attackedCreature.takeHit(1);
+        selectedHandCardInt = 1;
+    }
+
+    takeHit(hitDamage = 0){
+        this.defense -= hitDamage;
+        //activePlayer.checkDeaths();
+    }
+
 }
 
 class CardGoblin extends Card{
@@ -277,6 +305,14 @@ class Player{
             this.hand.push(this.deck.pop());
         }
         
+    }
+
+    checkDeaths(){
+        for(let i = 0; i < this.creatures.length; i++){
+            if(creatures[i].defense <= 0){
+                this.creatures.splice(i, 1);
+            }
+        }
     }
 
 }
