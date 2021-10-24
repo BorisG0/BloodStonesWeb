@@ -136,7 +136,7 @@ function drawPassiveHand(hand){
 function drawActiveCreatures(creatures){
 
     for(let i = 0; i < creatures.length; i++){
-        drawCard(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+        drawCreature(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
         canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize);
     }
 }
@@ -144,7 +144,7 @@ function drawActiveCreatures(creatures){
 function drawPassiveCreatures(creatures){
 
     for(let i = 0; i < creatures.length; i++){
-        drawCard(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+        drawCreature(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
         handCardSizeY + handCardGap + creatureGap, creatureSize);
     }
 }
@@ -203,11 +203,11 @@ function mouseClicked(event){
 
 
     if((y >= (handCardSizeY + handCardGap + creatureGap)) && y <= handCardSizeY + handCardGap + creatureGap + creatureSizeY){ //passive creatures clicked
-        if((x >= canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
-            && (x <= canvas.width/2 + activePlayer.creatures.length * (creatureSize + creatureGap)/2)){
+        if((x >= canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
+            && (x <= canvas.width/2 + passivePlayer.creatures.length * (creatureSize + creatureGap)/2)){
 
                 
-            var selectedPassiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
+            var selectedPassiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
 
 
             
@@ -216,6 +216,7 @@ function mouseClicked(event){
                 activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
                 activePlayer.checkDeaths();
                 passivePlayer.checkDeaths();
+                selectedActiveCreatureInt = -1;
             }
         }
     }
@@ -234,6 +235,11 @@ function mouseClicked(event){
 
 
     repaint();
+    console.log("--------------------------------------");
+    console.log("selected handcard: " + selectedHandCardInt);
+    console.log("selected activeCreature: " + selectedActiveCreatureInt);
+    console.log("activePlayer creatures: " + activePlayer.creatures.length);
+    console.log("passivePlayer creatures: " + passivePlayer.creatures.length);
     //activePlayer.hand.push(new CardGoblin());
 }
 
@@ -257,10 +263,12 @@ class Creature{
         this.image = image;
         this.attack = attack;
         this.defense = defense;
+        this.isReady = false;
     }
 
     attackCreature(attackedCreature){
         attackedCreature.takeHit(1);
+        this.takeHit(attackedCreature.attack);
         
     }
 
@@ -316,6 +324,12 @@ class Player{
             if(this.creatures[i].defense <= 0){
                 this.creatures.splice(i, 1);
             }
+        }
+    }
+
+    readyAllCreatures(){
+        for(let i = 0; i < this.creatures.length; i++){
+            this.creatures[i].isReady = true;
         }
     }
 
