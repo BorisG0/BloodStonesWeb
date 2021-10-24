@@ -67,6 +67,7 @@ function nextTurn(){
     activePlayer = passivePlayer;
     passivePlayer = p;
     activePlayer.drawCard();
+    activePlayer.readyAllCreatures();
 }
 
 
@@ -155,6 +156,9 @@ function drawCard(card, x, y, size){
 
 function drawCreature(creature, x, y, size){
     ctx.drawImage(creature.image, x, y, size, size * Math.sqrt(2));
+    if(!creature.isReady){
+        ctx.drawImage(document.getElementById("NotReadyImage"), x, y, size, size * Math.sqrt(2));
+    }
 }
 
 function mouseClicked(event){
@@ -194,8 +198,11 @@ function mouseClicked(event){
                     if(selectedActiveCreatureInt == selectedActiveCreatureIntTemp){
                         selectedActiveCreatureInt = -1;
                     }else{
-                        selectedActiveCreatureInt = selectedActiveCreatureIntTemp;
-                        selectedHandCardInt = -1;
+                        if(activePlayer.creatures[selectedActiveCreatureIntTemp].isReady){
+                            selectedActiveCreatureInt = selectedActiveCreatureIntTemp;
+                            selectedHandCardInt = -1;
+                        }
+                        
                     }
                 } 
         }
@@ -269,6 +276,7 @@ class Creature{
     attackCreature(attackedCreature){
         attackedCreature.takeHit(1);
         this.takeHit(attackedCreature.attack);
+        this.isReady = false;
         
     }
 
