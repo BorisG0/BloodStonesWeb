@@ -29,7 +29,7 @@ function startGame(){
     var logoSizeY = 724/2;
     ctx.drawImage(imgLogo, (canvas.width / 2) - (logoSizeX / 2), 10, logoSizeX, logoSizeY);
     
-    ctx.font = '50px serif';
+    //ctx.font = '50px serif';
 
     //drawCard(goblinCard,10,10,130);
 
@@ -156,6 +156,16 @@ function drawCard(card, x, y, size){
 
 function drawCreature(creature, x, y, size){
     ctx.drawImage(creature.image, x, y, size, size * Math.sqrt(2));
+
+
+    ctx.font = '25px arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle = 'white';
+    ctx.fillText(creature.attack, x + size / 8, y + size * Math.sqrt(2) , 100);
+    ctx.fillText(creature.defense, x + size / 8 * 7, y + size * Math.sqrt(2), 100);
+
+
     if(!creature.isReady){
         ctx.drawImage(document.getElementById("NotReadyImage"), x, y, size, size * Math.sqrt(2));
     }
@@ -251,10 +261,11 @@ function mouseClicked(event){
 }
 
 class Card{
-    constructor(name, image, cost){
+    constructor(name, image, cost, cardtext){
         this.name = name;
         this.image = image;
         this.cost = cost;
+        this.cardtext = cardtext;
 
     }
 
@@ -289,7 +300,7 @@ class Creature{
 
 class CardGoblin extends Card{
     constructor(){
-        super("CardGoblin", document.getElementById("CardGoblinImage"), 2);
+        super("CardGoblin", document.getElementById("CardGoblinImage"), 2, "Spawns a 1/2 Goblin");
     }
 
     play(){
