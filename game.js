@@ -213,7 +213,9 @@ function mouseClicked(event){
             
 
             if(selectedActiveCreatureInt != -1 && selectedPassiveCreatureIntTemp < passivePlayer.creatures.length){
-                activePlayer.creatures[selectedActiveCreatureInt].attackCreature(new Creature());
+                activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
+                activePlayer.checkDeaths();
+                passivePlayer.checkDeaths();
             }
         }
     }
@@ -249,7 +251,8 @@ class Card{
 }
 
 class Creature{
-    constructor(name, image, attack, defense){
+    constructor(owner, name, image, attack, defense){
+        this.owner = owner;
         this.name = name;
         this.image = image;
         this.attack = attack;
@@ -258,12 +261,12 @@ class Creature{
 
     attackCreature(attackedCreature){
         attackedCreature.takeHit(1);
-        selectedHandCardInt = 1;
+        
     }
 
     takeHit(hitDamage = 0){
         this.defense -= hitDamage;
-        //activePlayer.checkDeaths();
+        //this.owner.checkDeaths();
     }
 
 }
@@ -274,13 +277,13 @@ class CardGoblin extends Card{
     }
 
     play(){
-        activePlayer.creatures.push(new CreatureGoblin());
+        activePlayer.creatures.push(new CreatureGoblin(activePlayer));
     }
 }
 
 class CreatureGoblin extends Creature{
-    constructor(){
-        super("Goblin", document.getElementById("CreatureGoblinImage"), 1, 2);
+    constructor(owner){
+        super("Goblin",owner, document.getElementById("CreatureGoblinImage"), 1, 2);
     }
 }
 
@@ -296,8 +299,8 @@ class Player{
         this.deck.push(new CardGoblin());
 
         this.creatures = [];
-        this.creatures.push(new CreatureGoblin());
-        this.creatures.push(new CreatureGoblin());
+        this.creatures.push(new CreatureGoblin(this));
+        this.creatures.push(new CreatureGoblin(this));
     }
 
     drawCard(){
@@ -308,8 +311,9 @@ class Player{
     }
 
     checkDeaths(){
+        //selectedHandCardInt = 1;
         for(let i = 0; i < this.creatures.length; i++){
-            if(creatures[i].defense <= 0){
+            if(this.creatures[i].defense <= 0){
                 this.creatures.splice(i, 1);
             }
         }
