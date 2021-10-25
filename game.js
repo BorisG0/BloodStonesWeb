@@ -292,7 +292,7 @@ class Creature{
     }
 
     attackCreature(attackedCreature){
-        attackedCreature.takeHit(1);
+        attackedCreature.takeHit(this.attack);
         this.takeHit(attackedCreature.attack);
         this.isReady = false;
         
@@ -315,9 +315,25 @@ class CardGoblin extends Card{
     }
 }
 
+class CardFireGoblin extends Card{
+    constructor(){
+        super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2, "Spawns a\n3/1 FireGoblin");
+    }
+
+    play(){
+        activePlayer.creatures.push(new CreatureFireGoblin(activePlayer));
+    }
+}
+
 class CreatureGoblin extends Creature{
     constructor(owner){
         super("Goblin",owner, document.getElementById("CreatureGoblinImage"), 1, 2);
+    }
+}
+
+class CreatureFireGoblin extends Creature{
+    constructor(owner){
+        super("FireGoblin",owner, document.getElementById("CreatureFireGoblinImage"), 3, 1);
     }
 }
 
@@ -327,9 +343,9 @@ class Player{
         this.hand = [];
 
         this.deck = [];
+        this.deck.push(new CardFireGoblin());
         this.deck.push(new CardGoblin());
-        this.deck.push(new CardGoblin());
-        this.deck.push(new CardGoblin());
+        this.deck.push(new CardFireGoblin());
         this.deck.push(new CardGoblin());
 
         this.creatures = [];
