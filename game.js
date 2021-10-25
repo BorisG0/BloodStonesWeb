@@ -152,6 +152,13 @@ function drawPassiveCreatures(creatures){
 
 function drawCard(card, x, y, size){
     ctx.drawImage(card.image, x, y, size, size * Math.sqrt(2));
+
+    ctx.font = '13px arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle = 'white';
+
+    ctx.fillText(card.cardtext, x + size / 2, y + size / 16 * 11 * Math.sqrt(2));
 }
 
 function drawCreature(creature, x, y, size){
