@@ -305,6 +305,9 @@ class Creature{
 
 }
 
+
+//Cards
+
 class CardGoblin extends Card{
     constructor(){
         super("CardGoblin", document.getElementById("CardGoblinImage"), 2, "Spawns a 1/2 Goblin");
@@ -325,6 +328,19 @@ class CardFireGoblin extends Card{
     }
 }
 
+class CardArmoredOgre extends Card{
+    constructor(){
+        super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 2, "Spawns a 2/5 Armored Ogre");
+    }
+
+    play(){
+        activePlayer.creatures.push(new CreatureArmoredOgre(activePlayer));
+    }
+}
+
+
+//Creatures
+
 class CreatureGoblin extends Creature{
     constructor(owner){
         super("Goblin",owner, document.getElementById("CreatureGoblinImage"), 1, 2);
@@ -337,6 +353,12 @@ class CreatureFireGoblin extends Creature{
     }
 }
 
+class CreatureArmoredOgre extends Creature{
+    constructor(owner){
+        super("ArmoredOgre",owner, document.getElementById("CreatureArmoredOgreImage"), 2, 5);
+    }
+}
+
 class Player{
     constructor(name){
         this.name = name;
@@ -345,8 +367,10 @@ class Player{
         this.deck = [];
         this.deck.push(new CardFireGoblin());
         this.deck.push(new CardGoblin());
+        this.deck.push(new CardArmoredOgre());
         this.deck.push(new CardFireGoblin());
         this.deck.push(new CardGoblin());
+        this.deck.push(new CardArmoredOgre());
 
         this.creatures = [];
         this.creatures.push(new CreatureGoblin(this));
