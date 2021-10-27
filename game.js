@@ -158,7 +158,11 @@ function drawCard(card, x, y, size){
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = 'white';
 
-    ctx.fillText(card.cardtext, x + size / 2, y + size / 16 * 11 * Math.sqrt(2));
+    for(let i = 0; i < card.cardtext.length; i++){
+        ctx.fillText(card.cardtext[i], x + size / 2, y + size / 16 * (10 + i * 1.5) * Math.sqrt(2));
+    }
+
+    //ctx.fillText(card.cardtext, x + size / 2, y + size / 16 * 11 * Math.sqrt(2));
 }
 
 function drawCreature(creature, x, y, size){
@@ -311,6 +315,8 @@ class Creature{
 class CardGoblin extends Card{
     constructor(){
         super("CardGoblin", document.getElementById("CardGoblinImage"), 2, "Spawns a 1/2 Goblin");
+        this.cardtext = [];
+        this.cardtext.push("Spawns a 1/2 Goblin");
     }
 
     play(){
@@ -321,6 +327,9 @@ class CardGoblin extends Card{
 class CardFireGoblin extends Card{
     constructor(){
         super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2, "Spawns a\n3/1 FireGoblin");
+        this.cardtext = [];
+        this.cardtext.push("Spawns a");
+        this.cardtext.push("3/1 Firegoblin")
     }
 
     play(){
@@ -331,6 +340,9 @@ class CardFireGoblin extends Card{
 class CardArmoredOgre extends Card{
     constructor(){
         super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 2, "Spawns a 2/5 Armored Ogre");
+        this.cardtext = [];
+        this.cardtext.push("Spawns a");
+        this.cardtext.push("2/5 Armored Ogre")
     }
 
     play(){
