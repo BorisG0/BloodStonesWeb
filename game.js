@@ -9,7 +9,7 @@ var activePlayer, passivePlayer;
 var canvas, ctx;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
-var turnStatus = 1; //1 = mid turn,   0 = between turns
+var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
 var castingFieldSize = 200;
@@ -41,7 +41,7 @@ function startGame(){
 
     //ctx.fillText(player1.hand[0].name, 100, 100)
     //drawCard(player1.hand[0], 0, 500, 130);
-    nextTurn();
+    //nextTurn();
     repaint();
     
 }
@@ -74,6 +74,19 @@ function nextTurn(){
 function repaint(){
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     
+    if(turnStatus == 2){
+        drawCard(new CardFireGoblin(), canvas.width/2 - 2 * handCardSize, canvas.height/2 - handCardSizeY/2, handCardSize);
+        drawCard(new CardGoblin(), canvas.width/2 + handCardSize, canvas.height/2 - handCardSizeY/2, handCardSize);
+
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(canvas.width/2 - 3, 0);
+        ctx.lineTo(canvas.width/2 - 3, canvas.height);
+        ctx.stroke();
+
+        ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
+    }
 
     if(turnStatus == 1){
 
@@ -93,12 +106,7 @@ function repaint(){
         ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
-    // ctx.strokeStyle = 'red';
-    // ctx.lineWidth = 6;
-    // ctx.beginPath();
-    // ctx.moveTo(canvas.width/2 - 3, 0);
-    // ctx.lineTo(canvas.width/2 - 3, canvas.height);
-    // ctx.stroke();
+    
 }
 
 function drawHandCardSelection(){
