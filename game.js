@@ -103,6 +103,7 @@ function repaint(){
 
     if(turnStatus == 1){//Midturn
 
+        //Draw activeplayer with decks
         ctx.drawImage(activePlayer.image, deckGap + deckSize/2, canvas.height - deckSizeY*2 - deckGap*2, deckSize, deckSizeY);
         ctx.drawImage(document.getElementById("BackSideImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
         if(activePlayer.discardDeck.length > 0){
@@ -112,6 +113,7 @@ function repaint(){
         }
         
 
+        //Draw passiveplayer with decks
         ctx.drawImage(passivePlayer.image, deckGap + deckSize/2, deckGap*2 + deckSizeY, deckSize, deckSizeY);
         ctx.drawImage(document.getElementById("BackSideImage"), deckGap, deckGap, deckSize, deckSizeY);
         if(passivePlayer.discardDeck.length > 0){
@@ -134,6 +136,10 @@ function repaint(){
     }
 
     if(turnStatus == 0){//Between turns
+
+        ctx.drawImage(passivePlayer.image, canvas.width/2 - handCardSize/2, canvas.height/2 - handCardSizeY/2, handCardSize, handCardSizeY);
+
+
         ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
