@@ -188,7 +188,40 @@ function mouseClicked(event){
     var x = event.clientX;     // Get the horizontal coordinate
     var y = event.clientY;     // Get the vertical coordinate
 
+    if(turnStatus == 0){
+        mouseClickedBetweenTurns(x, y);
+    }else if(turnStatus == 1){
+        mouseClickedMidTurn(x, y);
+    }
+
     
+
+
+    repaint();
+    console.log("--------------------------------------");
+    console.log("selected handcard: " + selectedHandCardInt);
+    console.log("selected activeCreature: " + selectedActiveCreatureInt);
+    console.log("activePlayer creatures: " + activePlayer.creatures.length);
+    console.log("passivePlayer creatures: " + passivePlayer.creatures.length);
+    console.log("turnstatus: " + turnStatus);
+    //activePlayer.hand.push(new CardGoblin());
+}
+
+function mouseClickedBetweenTurns(x, y){
+
+    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
+    && x > canvas.width - turnButtonSize){ 
+        nextTurn();
+    }
+
+}
+
+function mouseClickedMidTurn(x, y){
+
+    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
+    && x > canvas.width - turnButtonSize){ 
+        endTurn();
+    }
 
     if(y >= (canvas.height - handCardSizeY - handCardGap)){ //handcards clicked
         if((x >= canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2) 
@@ -251,26 +284,11 @@ function mouseClicked(event){
         }
     }
 
+    if((y >= (canvas.height/2 - castingFieldSizeY/2)) && (y <= (canvas.height/2 + castingFieldSizeY/2)) //castingfield clicked
+    && (x >= (canvas.width/2 - castingFieldSize/2)) && (x <= (canvas.width/2 + castingFieldSize/2))){
+       castSelected();
+   }
 
-    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
-    && x > canvas.width - turnButtonSize){ 
-        if(turnStatus == 1) endTurn();
-        else nextTurn();
-    }
-
-    if((y >= (canvas.height/2 - castingFieldSizeY/2)) && (y <= (canvas.height/2 + castingFieldSizeY/2))
-     && (x >= (canvas.width/2 - castingFieldSize/2)) && (x <= (canvas.width/2 + castingFieldSize/2))){
-        castSelected();
-    }
-
-
-    repaint();
-    console.log("--------------------------------------");
-    console.log("selected handcard: " + selectedHandCardInt);
-    console.log("selected activeCreature: " + selectedActiveCreatureInt);
-    console.log("activePlayer creatures: " + activePlayer.creatures.length);
-    console.log("passivePlayer creatures: " + passivePlayer.creatures.length);
-    //activePlayer.hand.push(new CardGoblin());
 }
 
 class Card{
