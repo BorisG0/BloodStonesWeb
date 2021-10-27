@@ -1,19 +1,30 @@
 var handCardSize = 150;
 var handCardSizeY = handCardSize * Math.sqrt(2);
 var handCardGap = 10;
+
 var creatureSize = 110;
 var creatureSizeY = creatureSize * Math.sqrt(2);
 var creatureGap = 5;
+
 var player1, player2;
 var activePlayer, passivePlayer;
+
 var canvas, ctx;
+
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
-var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft
+
+var turnStatus = 0; //1 = mid turn,     0 = between turns,     2 = draft
+
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
+
 var castingFieldSize = 200;
 var castingFieldSizeY = castingFieldSize * (3/4);
+
+var deckSize = 130;
+var deckSizeY = deckSize * Math.sqrt(2);
+var deckGap = 5;
 
 
 function startGame(){
@@ -33,8 +44,8 @@ function startGame(){
 
     //drawCard(goblinCard,10,10,130);
 
-    player1 = new Player("kek");
-    player2 = new Player("lol");
+    player1 = new Player("kek", document.getElementById("CharDemonMasterImage"));
+    player2 = new Player("lol", document.getElementById("CharMageImage"));
 
     activePlayer = player1;
     passivePlayer = player2;
@@ -49,6 +60,7 @@ function startGame(){
 function castSelected(){
     if(selectedHandCardInt != -1){
         activePlayer.hand[selectedHandCardInt].play();
+        activePlayer.discardDeck.push(activePlayer.hand[selectedHandCardInt]);
         activePlayer.hand.splice(selectedHandCardInt, 1);
         selectedHandCardInt = -1;
     }
@@ -74,7 +86,8 @@ function nextTurn(){
 function repaint(){
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     
-    if(turnStatus == 2){
+    if(turnStatus == 2){ //Draft
+
         drawCard(new CardFireGoblin(), canvas.width/2 - 2 * handCardSize, canvas.height/2 - handCardSizeY/2, handCardSize);
         drawCard(new CardGoblin(), canvas.width/2 + handCardSize, canvas.height/2 - handCardSizeY/2, handCardSize);
 
@@ -88,7 +101,25 @@ function repaint(){
         ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
     }
 
-    if(turnStatus == 1){
+    if(turnStatus == 1){//Midturn
+
+        ctx.drawImage(activePlayer.image, deckGap + deckSize/2, canvas.height - deckSizeY*2 - deckGap*2, deckSize, deckSizeY);
+        ctx.drawImage(document.getElementById("BackSideImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
+        if(activePlayer.discardDeck.length > 0){
+            drawCard(activePlayer.discardDeck[activePlayer.discardDeck.length - 1], deckGap*2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize);
+        }else{
+            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap*2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
+        }
+        
+
+        ctx.drawImage(passivePlayer.image, deckGap + deckSize/2, deckGap*2 + deckSizeY, deckSize, deckSizeY);
+        ctx.drawImage(document.getElementById("BackSideImage"), deckGap, deckGap, deckSize, deckSizeY);
+        if(passivePlayer.discardDeck.length > 0){
+            drawCard(passivePlayer.discardDeck[passivePlayer.discardDeck.length - 1], deckGap*2 + deckSize, deckGap, deckSize);
+        }else{
+            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap*2 + deckSize, deckGap, deckSize, deckSizeY);
+        }
+        
 
         drawActiveHand(activePlayer.hand);
         drawPassiveHand(passivePlayer.hand);
@@ -102,7 +133,7 @@ function repaint(){
         ctx.drawImage(document.getElementById("EndTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
-    if(turnStatus == 0){
+    if(turnStatus == 0){//Between turns
         ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
@@ -338,13 +369,18 @@ class Creature{
 }
 
 
+
+
+
+//----------------------------------------------------------------
 //Cards
 
 class CardGoblin extends Card{
     constructor(){
         super("CardGoblin", document.getElementById("CardGoblinImage"), 2, "Spawns a 1/2 Goblin");
         this.cardtext = [];
-        this.cardtext.push("Spawns a 1/2 Goblin");
+        this.cardtext.push("Spawns a");
+        this.cardtext.push("1/2 Goblin");
     }
 
     play(){
@@ -377,8 +413,13 @@ class CardArmoredOgre extends Card{
         activePlayer.creatures.push(new CreatureArmoredOgre(activePlayer));
     }
 }
+//----------------------------------------------------------------
 
 
+
+
+
+//----------------------------------------------------------------
 //Creatures
 
 class CreatureGoblin extends Creature{
@@ -398,11 +439,22 @@ class CreatureArmoredOgre extends Creature{
         super("ArmoredOgre",owner, document.getElementById("CreatureArmoredOgreImage"), 2, 5);
     }
 }
+//----------------------------------------------------------------
+
+
+
+
+
+//----------------------------------------------------------------
+//Player
 
 class Player{
-    constructor(name){
+    constructor(name, image){
         this.name = name;
+        this.image = image;
         this.hand = [];
+
+        this.health = 30;
 
         this.deck = [];
         this.deck.push(new CardFireGoblin());
@@ -411,6 +463,8 @@ class Player{
         this.deck.push(new CardFireGoblin());
         this.deck.push(new CardGoblin());
         this.deck.push(new CardArmoredOgre());
+
+        this.discardDeck = [];
 
         this.creatures = [];
         this.creatures.push(new CreatureGoblin(this));
@@ -440,3 +494,4 @@ class Player{
     }
 
 }
+//----------------------------------------------------------------
