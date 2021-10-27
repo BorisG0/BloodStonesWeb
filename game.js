@@ -162,7 +162,9 @@ function drawCard(card, x, y, size){
         ctx.fillText(card.cardtext[i], x + size / 2, y + size / 16 * (10 + i * 1.5) * Math.sqrt(2));
     }
 
-    //ctx.fillText(card.cardtext, x + size / 2, y + size / 16 * 11 * Math.sqrt(2));
+    ctx.font = '30px arial';
+
+    ctx.fillText(card.cost, x + size * 27 / 32, y + size * Math.sqrt(2) * 31 / 32);
 }
 
 function drawCreature(creature, x, y, size){
