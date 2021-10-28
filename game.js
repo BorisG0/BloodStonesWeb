@@ -105,7 +105,14 @@ function repaint(){
 
         //Draw activeplayer with decks
         ctx.drawImage(activePlayer.image, deckGap + deckSize/2, canvas.height - deckSizeY*2 - deckGap*2, deckSize, deckSizeY);
-        ctx.drawImage(document.getElementById("BackSideImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
+
+        if(activePlayer.deck.length > 0){
+            ctx.drawImage(document.getElementById("BackSideImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
+        }else{
+            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
+        }
+        
+
         if(activePlayer.discardDeck.length > 0){
             drawCard(activePlayer.discardDeck[activePlayer.discardDeck.length - 1], deckGap*2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize);
         }else{
@@ -115,7 +122,13 @@ function repaint(){
 
         //Draw passiveplayer with decks
         ctx.drawImage(passivePlayer.image, deckGap + deckSize/2, deckGap*2 + deckSizeY, deckSize, deckSizeY);
-        ctx.drawImage(document.getElementById("BackSideImage"), deckGap, deckGap, deckSize, deckSizeY);
+
+        if(passivePlayer.deck.length > 0){
+            ctx.drawImage(document.getElementById("BackSideImage"), deckGap, deckGap, deckSize, deckSizeY);
+        }else{
+            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, deckGap, deckSize, deckSizeY);
+        }
+        
         if(passivePlayer.discardDeck.length > 0){
             drawCard(passivePlayer.discardDeck[passivePlayer.discardDeck.length - 1], deckGap*2 + deckSize, deckGap, deckSize);
         }else{
