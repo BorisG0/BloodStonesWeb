@@ -106,35 +106,64 @@ function repaint(){
         //Draw activeplayer with decks
         ctx.drawImage(activePlayer.image, deckGap + deckSize/2, canvas.height - deckSizeY*2 - deckGap*2, deckSize, deckSizeY);
 
-        if(activePlayer.deck.length > 0){
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = 'white';
+        ctx.font = '25px arial';
+
+        ctx.fillText(activePlayer.health, deckGap + deckSize, canvas.height - deckSizeY*2 - deckGap*2 + deckSizeY/32*29);
+
+
+        if(activePlayer.deck.length > 0){ //draw deck
             ctx.drawImage(document.getElementById("BackSideImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
         }else{
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
         }
+
+        ctx.font = '30px arial';
+        ctx.fillText(activePlayer.deck.length, deckGap + deckSize/2, canvas.height - deckSizeY - deckGap);
         
 
-        if(activePlayer.discardDeck.length > 0){
+        if(activePlayer.discardDeck.length > 0){ //draw discarddeck
             drawCard(activePlayer.discardDeck[activePlayer.discardDeck.length - 1], deckGap*2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize);
         }else{
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap*2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
         }
         
+        ctx.fillText(activePlayer.discardDeck.length, deckGap + deckSize/2*3, canvas.height - deckSizeY - deckGap);
+
+
 
         //Draw passiveplayer with decks
         ctx.drawImage(passivePlayer.image, deckGap + deckSize/2, deckGap*2 + deckSizeY, deckSize, deckSizeY);
+
+        ctx.font = '25px arial';
+
+        ctx.fillText(passivePlayer.health, deckGap + deckSize, deckGap*2 + deckSizeY + deckSizeY/32*29);
 
         if(passivePlayer.deck.length > 0){
             ctx.drawImage(document.getElementById("BackSideImage"), deckGap, deckGap, deckSize, deckSizeY);
         }else{
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, deckGap, deckSize, deckSizeY);
         }
+
+        ctx.font = '30px arial';
+        ctx.fillText(passivePlayer.deck.length, deckGap + deckSize/2, deckSizeY + deckGap + 35);
+
+        
         
         if(passivePlayer.discardDeck.length > 0){
             drawCard(passivePlayer.discardDeck[passivePlayer.discardDeck.length - 1], deckGap*2 + deckSize, deckGap, deckSize);
         }else{
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap*2 + deckSize, deckGap, deckSize, deckSizeY);
         }
+
+        ctx.fillText(passivePlayer.discardDeck.length, deckGap + deckSize/2*3, deckSizeY + deckGap + 35);
         
+
+
+
+
 
         drawActiveHand(activePlayer.hand);
         drawPassiveHand(passivePlayer.hand);
