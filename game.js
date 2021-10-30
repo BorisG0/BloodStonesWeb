@@ -26,6 +26,8 @@ var deckSize = 130;
 var deckSizeY = deckSize * Math.sqrt(2);
 var deckGap = 5;
 
+var stoneSize = 60;
+
 
 function startGame(){
     canvas = document.getElementById("myCanvas");
@@ -58,7 +60,8 @@ function startGame(){
 }
 
 function castSelected(){
-    if(selectedHandCardInt != -1){
+    if(selectedHandCardInt != -1 && activePlayer.fullStones >= activePlayer.hand[selectedHandCardInt].cost){
+        activePlayer.fullStones -= activePlayer.hand[selectedHandCardInt].cost;
         activePlayer.hand[selectedHandCardInt].play();
         activePlayer.discardDeck.push(activePlayer.hand[selectedHandCardInt]);
         activePlayer.hand.splice(selectedHandCardInt, 1);
@@ -75,11 +78,16 @@ function endTurn(){
 
 function nextTurn(){
     turnStatus = 1;
+
     var p = activePlayer;
     activePlayer = passivePlayer;
     passivePlayer = p;
+
+
     activePlayer.drawCard();
     activePlayer.readyAllCreatures();
+    activePlayer.maxStones++;
+    activePlayer.fillStones();
 }
 
 
@@ -163,7 +171,7 @@ function repaint(){
 
 
 
-
+        drawStones();
 
         drawActiveHand(activePlayer.hand);
         drawPassiveHand(passivePlayer.hand);
@@ -186,6 +194,22 @@ function repaint(){
     }
 
     
+}
+
+function drawStones(){
+    let mStones = activePlayer.maxStones;
+    let fStones = activePlayer.fullStones;
+
+    for(let i = 0; i < mStones; i++){
+        let image;
+        if(i < fStones){
+            image = document.getElementById("StoneImage");
+        }else{
+            image = document.getElementById("EmptyStoneImage");
+        }
+
+        ctx.drawImage(image,  i * stoneSize, canvas.height/2 - stoneSize/2, stoneSize, stoneSize);
+    }
 }
 
 function drawHandCardSelection(){
@@ -451,7 +475,7 @@ class CardFireGoblin extends Card{
 
 class CardArmoredOgre extends Card{
     constructor(){
-        super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 2, "Spawns a 2/5 Armored Ogre");
+        super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 5, "Spawns a 2/5 Armored Ogre");
         this.cardtext = [];
         this.cardtext.push("Spawns a");
         this.cardtext.push("2/5 Armored Ogre")
@@ -504,6 +528,9 @@ class Player{
 
         this.health = 30;
 
+        this.maxStones = 0;
+        this.fullStones = 0;
+
         this.deck = [];
         this.deck.push(new CardFireGoblin());
         this.deck.push(new CardGoblin());
@@ -517,6 +544,10 @@ class Player{
         this.creatures = [];
         this.creatures.push(new CreatureGoblin(this));
         this.creatures.push(new CreatureGoblin(this));
+    }
+
+    fillStones(){
+        this.fullStones = this.maxStones;
     }
 
     drawCard(){
