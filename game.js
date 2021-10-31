@@ -14,7 +14,7 @@ var canvas, ctx;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
-var turnStatus = 0; //1 = mid turn,     0 = between turns,     2 = draft
+var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft
 
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -27,6 +27,12 @@ var deckSizeY = deckSize * Math.sqrt(2);
 var deckGap = 5;
 
 var stoneSize = 60;
+
+var draftableCards;
+
+var draftableCardSize = 150;
+var draftableCardSizeY = draftableCardSize * Math.sqrt(2);
+var draftableCardGap = 15;
 
 
 function startGame(){
@@ -52,12 +58,28 @@ function startGame(){
     activePlayer = player1;
     passivePlayer = player2;
 
+    if(turnStatus == 2)
+    startDraft();
+
     //ctx.fillText(player1.hand[0].name, 100, 100)
     //drawCard(player1.hand[0], 0, 500, 130);
     //nextTurn();
     repaint();
     
 }
+
+
+function startDraft(){
+    draftableCards = [];
+    draftableCards.push(new CardArmoredOgre());
+    draftableCards.push(new CardFireGoblin());
+    draftableCards.push(new CardGoblin());
+    draftableCards.push(new CardGoblin());
+    draftableCards.push(new CardGoblin());
+    draftableCards.push(new CardArmoredOgre());
+}
+
+
 
 function castSelected(){
     if(selectedHandCardInt != -1 && activePlayer.fullStones >= activePlayer.hand[selectedHandCardInt].cost){
@@ -96,8 +118,7 @@ function repaint(){
     
     if(turnStatus == 2){ //Draft
 
-        drawCard(new CardFireGoblin(), canvas.width/2 - 2 * handCardSize, canvas.height/2 - handCardSizeY/2, handCardSize);
-        drawCard(new CardGoblin(), canvas.width/2 + handCardSize, canvas.height/2 - handCardSizeY/2, handCardSize);
+        drawDraftableCards();
 
         ctx.strokeStyle = 'red';
         ctx.lineWidth = 6;
@@ -194,6 +215,14 @@ function repaint(){
     }
 
     
+}
+
+function drawDraftableCards(){
+    let l = draftableCards.length;
+    for(let i = 0; i < l; i++){
+        drawCard(draftableCards[i], (canvas.width/2) - (l * (draftableCardSize + draftableCardGap) / 2) + i * (draftableCardSize + draftableCardGap),
+          draftableCardGap, draftableCardSize);
+    }
 }
 
 function drawStones(){
