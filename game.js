@@ -76,7 +76,6 @@ function startDraft(){
     draftableCards.push(new CardGoblin());
     draftableCards.push(new CardGoblin());
     draftableCards.push(new CardGoblin());
-    draftableCards.push(new CardArmoredOgre());
 }
 
 
