@@ -14,7 +14,7 @@ var canvas, ctx;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
-var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft
+var turnStatus = 0; //1 = mid turn,     0 = between turns,     2 = draft
 
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -445,8 +445,7 @@ class Card{
 }
 
 class Creature{
-    constructor(owner, name, image, attack, defense){
-        this.owner = owner;
+    constructor(name, image, attack, defense){
         this.name = name;
         this.image = image;
         this.attack = attack;
@@ -463,7 +462,6 @@ class Creature{
 
     takeHit(hitDamage = 0){
         this.defense -= hitDamage;
-        //this.owner.checkDeaths();
     }
 
 }
@@ -484,7 +482,7 @@ class CardGoblin extends Card{
     }
 
     play(){
-        activePlayer.creatures.push(new CreatureGoblin(activePlayer));
+        activePlayer.creatures.push(new CreatureGoblin());
     }
 }
 
@@ -497,7 +495,7 @@ class CardFireGoblin extends Card{
     }
 
     play(){
-        activePlayer.creatures.push(new CreatureFireGoblin(activePlayer));
+        activePlayer.creatures.push(new CreatureFireGoblin());
     }
 }
 
@@ -510,7 +508,7 @@ class CardArmoredOgre extends Card{
     }
 
     play(){
-        activePlayer.creatures.push(new CreatureArmoredOgre(activePlayer));
+        activePlayer.creatures.push(new CreatureArmoredOgre());
     }
 }
 //----------------------------------------------------------------
@@ -523,20 +521,20 @@ class CardArmoredOgre extends Card{
 //Creatures
 
 class CreatureGoblin extends Creature{
-    constructor(owner){
-        super("Goblin",owner, document.getElementById("CreatureGoblinImage"), 1, 2);
+    constructor(){
+        super("Goblin", document.getElementById("CreatureGoblinImage"), 1, 2);
     }
 }
 
 class CreatureFireGoblin extends Creature{
-    constructor(owner){
-        super("FireGoblin",owner, document.getElementById("CreatureFireGoblinImage"), 3, 1);
+    constructor(){
+        super("FireGoblin", document.getElementById("CreatureFireGoblinImage"), 3, 1);
     }
 }
 
 class CreatureArmoredOgre extends Creature{
-    constructor(owner){
-        super("ArmoredOgre",owner, document.getElementById("CreatureArmoredOgreImage"), 2, 5);
+    constructor(){
+        super("ArmoredOgre", document.getElementById("CreatureArmoredOgreImage"), 2, 5);
     }
 }
 //----------------------------------------------------------------
@@ -570,8 +568,8 @@ class Player{
         this.discardDeck = [];
 
         this.creatures = [];
-        this.creatures.push(new CreatureGoblin(this));
-        this.creatures.push(new CreatureGoblin(this));
+        this.creatures.push(new CreatureGoblin());
+        this.creatures.push(new CreatureGoblin());
     }
 
     fillStones(){
