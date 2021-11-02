@@ -423,6 +423,17 @@ function mouseClickedMidTurn(x, y){
         }
     }
 
+
+
+    if(y >= (deckGap*2 + deckSizeY) && y <= (deckGap*2 + deckSizeY*2) && // passive player clicked
+        x >= deckGap + deckSize/2 && x <= deckGap + deckSize/2 * 3){ 
+        if(selectedActiveCreatureInt != -1){
+            activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
+            selectedActiveCreatureInt = -1;
+        }
+    }
+
+
     if((y >= (canvas.height/2 - castingFieldSizeY/2)) && (y <= (canvas.height/2 + castingFieldSizeY/2)) //castingfield clicked
     && (x >= (canvas.width/2 - castingFieldSize/2)) && (x <= (canvas.width/2 + castingFieldSize/2))){
        castSelected();
@@ -458,6 +469,11 @@ class Creature{
         this.takeHit(attackedCreature.attack);
         this.isReady = false;
         
+    }
+
+    attackPlayer(attackedPlayer){
+        attackedPlayer.takeHit(this.attack);
+        this.isReady = false;
     }
 
     takeHit(hitDamage = 0){
@@ -596,6 +612,10 @@ class Player{
         for(let i = 0; i < this.creatures.length; i++){
             this.creatures[i].isReady = true;
         }
+    }
+
+    takeHit(damage){
+        this.health -= damage;
     }
 
 }
