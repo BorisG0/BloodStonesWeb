@@ -14,7 +14,7 @@ var canvas, ctx;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
-var turnStatus = 0; //1 = mid turn,     0 = between turns,     2 = draft
+var turnStatus = 0; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen
 
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -34,6 +34,7 @@ var draftableCardSize = 150;
 var draftableCardSizeY = draftableCardSize * Math.sqrt(2);
 var draftableCardGap = 15;
 
+var winner, loser;
 
 function startGame(){
     canvas = document.getElementById("myCanvas");
@@ -111,6 +112,13 @@ function nextTurn(){
     activePlayer.fillStones();
 }
 
+function checkWin(){
+    if(passivePlayer.health <= 0 ){
+        winner = activePlayer;
+        loser = passivePlayer;
+        turnStatus = 3;
+    }
+}
 
 function repaint(){
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -213,6 +221,16 @@ function repaint(){
         ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
+    if(turnStatus == 3){ //Winning screen
+        ctx.drawImage(winner.image, canvas.width/2 - handCardSize/2, canvas.height/2 - handCardSizeY/2, handCardSize, handCardSizeY);
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = 'white';
+        ctx.font = '35px arial';
+
+        ctx.fillText("won", canvas.width/2 - handCardSize/2, canvas.height/2 - handCardSizeY/2);
+    }
     
 }
 
@@ -616,6 +634,7 @@ class Player{
 
     takeHit(damage){
         this.health -= damage;
+        checkWin();
     }
 
 }
