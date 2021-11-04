@@ -36,6 +36,16 @@ var draftableCardGap = 15;
 
 var winner, loser;
 
+
+var isTargetingMode = false;
+var isValidPassiveCreatures = false;
+var isValidActiveCreatures = false;
+var isValidPassivePlayer = false;
+var isValidActivePlayer = false;
+var currentTargetingSpell;
+
+
+
 function startGame(){
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
@@ -84,7 +94,24 @@ function startDraft(){
 function castSelected(){
     if(selectedHandCardInt != -1 && activePlayer.fullStones >= activePlayer.hand[selectedHandCardInt].cost){
         activePlayer.fullStones -= activePlayer.hand[selectedHandCardInt].cost;
-        activePlayer.hand[selectedHandCardInt].play();
+
+
+        if(activePlayer.hand[selectedHandCardInt] instanceof CardTargetingSpell){
+
+            currentTargetingSpell = activePlayer.hand[selectedHandCardInt];
+
+            isTargetingMode = true;
+
+
+            isValidPassiveCreatures = currentTargetingSpell.isTargetingPassiveCreatures;
+            isValidActiveCreatures = currentTargetingSpell.isTargetingActiveCreatures;
+            isValidPassivePlayer = currentTargetingSpell.isTargetingPassivePlayer;
+            isValidActivePlayer = currentTargetingSpell.isTargetingActivePlayer;
+
+        }else{
+            activePlayer.hand[selectedHandCardInt].play();
+        }
+
         activePlayer.discardDeck.push(activePlayer.hand[selectedHandCardInt]);
         activePlayer.hand.splice(selectedHandCardInt, 1);
         selectedHandCardInt = -1;
@@ -194,6 +221,7 @@ function repaint(){
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap*2 + deckSize, deckGap, deckSize, deckSizeY);
         }
 
+
         ctx.fillText(passivePlayer.discardDeck.length, deckGap + deckSize/2*3, deckSizeY + deckGap + 35);
         
 
@@ -208,9 +236,15 @@ function repaint(){
         if(selectedHandCardInt != -1) drawHandCardSelection();
         if(selectedActiveCreatureInt != -1) drawActiveCreatureSelection();
 
-        ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
+        if(isTargetingMode){
+            ctx.drawImage(document.getElementById("CastingFieldActiveImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
+        }else{
+            ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
+            ctx.drawImage(document.getElementById("EndTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+        }
+        
 
-        ctx.drawImage(document.getElementById("EndTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+        
     }
 
     if(turnStatus == 0){//Between turns
@@ -373,19 +407,8 @@ function mouseClickedBetweenTurns(x, y){
 
 }
 
-function mouseClickedMidTurn(x, y){
-
-    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
-    && x > canvas.width - turnButtonSize){ 
-        endTurn();
-    }
-
-    if(y >= (canvas.height - handCardSizeY - handCardGap)){ //handcards clicked
-        if((x >= canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2) 
-            && (x <= canvas.width/2 + activePlayer.hand.length * (handCardSize + handCardGap)/2)){
-
-                
-            var selectedHandCardIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap)/2 )) / (handCardSize + handCardGap) );
+function clickedHandcards(x, y){
+    var selectedHandCardIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap)/2 )) / (handCardSize + handCardGap) );
 
             if(!(selectedHandCardIntTemp > activePlayer.hand.length - 1)){
                 if(selectedHandCardInt == selectedHandCardIntTemp){
@@ -395,17 +418,10 @@ function mouseClickedMidTurn(x, y){
                     selectedActiveCreatureInt = -1;
                 }
             }
-        }
-        
-        
-    }
+}
 
-    if((y >= (canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap)) && y <= canvas.height - handCardSizeY - handCardGap){ //active creatures clicked
-        if((x >= canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
-            && (x <= canvas.width/2 + activePlayer.creatures.length * (creatureSize + creatureGap)/2)){
-
-                
-            var selectedActiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
+function clickedActiveCreatures(x, y){
+    var selectedActiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
 
             if(!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)){
                     if(selectedActiveCreatureInt == selectedActiveCreatureIntTemp){
@@ -418,16 +434,10 @@ function mouseClickedMidTurn(x, y){
                         
                     }
                 } 
-        }
-    }
+}
 
-
-    if((y >= (handCardSizeY + handCardGap + creatureGap)) && y <= handCardSizeY + handCardGap + creatureGap + creatureSizeY){ //passive creatures clicked
-        if((x >= canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
-            && (x <= canvas.width/2 + passivePlayer.creatures.length * (creatureSize + creatureGap)/2)){
-
-                
-            var selectedPassiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
+function clickedPassiveCreatures(x, y){
+    var selectedPassiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
 
 
             
@@ -438,6 +448,51 @@ function mouseClickedMidTurn(x, y){
                 passivePlayer.checkDeaths();
                 selectedActiveCreatureInt = -1;
             }
+}
+
+function clickedActivePlayer(x, y){
+    //todo
+}
+
+function clickedPassivePlayer(x, y){
+    if(selectedActiveCreatureInt != -1){
+        activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
+        selectedActiveCreatureInt = -1;
+    }
+}
+
+function mouseClickedMidTurn(x, y){
+
+    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
+    && x > canvas.width - turnButtonSize){ 
+        endTurn();
+    }
+
+    if(y >= (canvas.height - handCardSizeY - handCardGap)){ //handcards clicked
+        if((x >= canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2) 
+            && (x <= canvas.width/2 + activePlayer.hand.length * (handCardSize + handCardGap)/2)){
+
+                clickedHandcards(x, y);
+            
+        }
+    }
+
+    if((y >= (canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap)) && y <= canvas.height - handCardSizeY - handCardGap){ //active creatures clicked
+        if((x >= canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
+            && (x <= canvas.width/2 + activePlayer.creatures.length * (creatureSize + creatureGap)/2)){
+
+                clickedActiveCreatures(x, y);
+            
+        }
+    }
+
+
+    if((y >= (handCardSizeY + handCardGap + creatureGap)) && y <= handCardSizeY + handCardGap + creatureGap + creatureSizeY){ //passive creatures clicked
+        if((x >= canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
+            && (x <= canvas.width/2 + passivePlayer.creatures.length * (creatureSize + creatureGap)/2)){
+
+                clickedPassiveCreatures(x, y);
+            
         }
     }
 
@@ -445,10 +500,7 @@ function mouseClickedMidTurn(x, y){
 
     if(y >= (deckGap*2 + deckSizeY) && y <= (deckGap*2 + deckSizeY*2) && // passive player clicked
         x >= deckGap + deckSize/2 && x <= deckGap + deckSize/2 * 3){ 
-        if(selectedActiveCreatureInt != -1){
-            activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
-            selectedActiveCreatureInt = -1;
-        }
+        clickedPassivePlayer(x, y);
     }
 
 
@@ -492,12 +544,17 @@ class CardSpawnCreature extends Card{
 class CardTargetingSpell extends Card{
     constructor(name, image, cost){
         super(name, image, cost);
-        
+
         this.isTargetingPassiveCreatures = false;
         this.isTargetingActiveCreatures = false;
         this.isTargetingPassivePlayer = false;
         this.isTargetingActivePlayer = false;
     }
+
+    play(target){
+
+    }
+
 }
 
 
@@ -537,6 +594,21 @@ class Creature{
 
 //----------------------------------------------------------------
 //Cards
+
+class CardFireBall extends CardTargetingSpell{
+    constructor(){
+        super("FireBall", document.getElementById("CardFireBallImage"), 2);
+        this.cardtext.push("Deals 3 Damage");
+        this.cardtext.push("to target enemy creature");
+
+        this.isTargetingPassiveCreatures = true;
+    }
+
+    play(target){
+        target.takeHit(3);
+    }
+}
+
 
 class CardGoblin extends CardSpawnCreature{
     constructor(){
@@ -618,6 +690,7 @@ class Player{
         this.deck.push(new CardFireGoblin());
         this.deck.push(new CardGoblin());
         this.deck.push(new CardArmoredOgre());
+        this.deck.push(new CardFireBall());
 
         this.discardDeck = [];
 
