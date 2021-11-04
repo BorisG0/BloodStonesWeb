@@ -653,7 +653,7 @@ class CardGoblin extends CardSpawnCreature {
 
 class CardFireGoblin extends CardSpawnCreature {
     constructor() {
-        super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2, "Spawns a\n3/1 FireGoblin");
+        super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2);
         this.cardtext.push("Spawns a");
         this.cardtext.push("3/1 Firegoblin");
         this.spawnCreatures.push(new CreatureFireGoblin());
@@ -662,7 +662,7 @@ class CardFireGoblin extends CardSpawnCreature {
 
 class CardArmoredOgre extends CardSpawnCreature {
     constructor() {
-        super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 5, "Spawns a 2/5 Armored Ogre");
+        super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 5);
         this.cardtext.push("Spawns a");
         this.cardtext.push("2/5 Armored Ogre");
         this.spawnCreatures.push(new CreatureArmoredOgre());
