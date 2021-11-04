@@ -20,7 +20,7 @@ var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
 
 var castingFieldSize = 200;
-var castingFieldSizeY = castingFieldSize * (3/4);
+var castingFieldSizeY = castingFieldSize * (3 / 4);
 
 var deckSize = 130;
 var deckSizeY = deckSize * Math.sqrt(2);
@@ -46,7 +46,7 @@ var currentTargetingSpell;
 
 
 
-function startGame(){
+function startGame() {
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
 
@@ -55,10 +55,10 @@ function startGame(){
 
 
     var imgLogo = document.getElementById("KidneyStoneLogoImage");
-    var logoSizeX = 1536/2;
-    var logoSizeY = 724/2;
+    var logoSizeX = 1536 / 2;
+    var logoSizeY = 724 / 2;
     ctx.drawImage(imgLogo, (canvas.width / 2) - (logoSizeX / 2), 10, logoSizeX, logoSizeY);
-    
+
     //ctx.font = '50px serif';
 
     //drawCard(goblinCard,10,10,130);
@@ -69,18 +69,18 @@ function startGame(){
     activePlayer = player1;
     passivePlayer = player2;
 
-    if(turnStatus == 2)
-    startDraft();
+    if (turnStatus == 2)
+        startDraft();
 
     //ctx.fillText(player1.hand[0].name, 100, 100)
     //drawCard(player1.hand[0], 0, 500, 130);
     //nextTurn();
     repaint();
-    
+
 }
 
 
-function startDraft(){
+function startDraft() {
     draftableCards = [];
     draftableCards.push(new CardArmoredOgre());
     draftableCards.push(new CardFireGoblin());
@@ -91,12 +91,12 @@ function startDraft(){
 
 
 
-function castSelected(){
-    if(selectedHandCardInt != -1 && activePlayer.fullStones >= activePlayer.hand[selectedHandCardInt].cost){
+function castSelected() {
+    if (selectedHandCardInt != -1 && activePlayer.fullStones >= activePlayer.hand[selectedHandCardInt].cost) {
         activePlayer.fullStones -= activePlayer.hand[selectedHandCardInt].cost;
 
 
-        if(activePlayer.hand[selectedHandCardInt] instanceof CardTargetingSpell){
+        if (activePlayer.hand[selectedHandCardInt] instanceof CardTargetingSpell) {
 
             currentTargetingSpell = activePlayer.hand[selectedHandCardInt];
 
@@ -108,7 +108,7 @@ function castSelected(){
             isValidPassivePlayer = currentTargetingSpell.isTargetingPassivePlayer;
             isValidActivePlayer = currentTargetingSpell.isTargetingActivePlayer;
 
-        }else{
+        } else {
             activePlayer.hand[selectedHandCardInt].play();
         }
 
@@ -119,13 +119,13 @@ function castSelected(){
 }
 
 
-function endTurn(){
+function endTurn() {
     turnStatus = 0;
     selectedHandCardInt = -1;
     selectedActiveCreatureInt = -1;
 }
 
-function nextTurn(){
+function nextTurn() {
     turnStatus = 1;
 
     var p = activePlayer;
@@ -139,91 +139,91 @@ function nextTurn(){
     activePlayer.fillStones();
 }
 
-function checkWin(){
-    if(passivePlayer.health <= 0 ){
+function checkWin() {
+    if (passivePlayer.health <= 0) {
         winner = activePlayer;
         loser = passivePlayer;
         turnStatus = 3;
     }
 }
 
-function repaint(){
+function repaint() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    
-    if(turnStatus == 2){ //Draft
+
+    if (turnStatus == 2) { //Draft
 
         drawDraftableCards();
 
         ctx.strokeStyle = 'red';
         ctx.lineWidth = 6;
         ctx.beginPath();
-        ctx.moveTo(canvas.width/2 - 3, 0);
-        ctx.lineTo(canvas.width/2 - 3, canvas.height);
+        ctx.moveTo(canvas.width / 2 - 3, 0);
+        ctx.lineTo(canvas.width / 2 - 3, canvas.height);
         ctx.stroke();
 
-        ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
+        ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
     }
 
-    if(turnStatus == 1){//Midturn
+    if (turnStatus == 1) {//Midturn
 
         //Draw activeplayer with decks
-        ctx.drawImage(activePlayer.image, deckGap + deckSize/2, canvas.height - deckSizeY*2 - deckGap*2, deckSize, deckSizeY);
+        ctx.drawImage(activePlayer.image, deckGap + deckSize / 2, canvas.height - deckSizeY * 2 - deckGap * 2, deckSize, deckSizeY);
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillStyle = 'white';
         ctx.font = '25px arial';
 
-        ctx.fillText(activePlayer.health, deckGap + deckSize, canvas.height - deckSizeY*2 - deckGap*2 + deckSizeY/32*29);
+        ctx.fillText(activePlayer.health, deckGap + deckSize, canvas.height - deckSizeY * 2 - deckGap * 2 + deckSizeY / 32 * 29);
 
 
-        if(activePlayer.deck.length > 0){ //draw deck
+        if (activePlayer.deck.length > 0) { //draw deck
             ctx.drawImage(document.getElementById("BackSideImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
-        }else{
+        } else {
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
         }
 
         ctx.font = '30px arial';
-        ctx.fillText(activePlayer.deck.length, deckGap + deckSize/2, canvas.height - deckSizeY - deckGap);
-        
+        ctx.fillText(activePlayer.deck.length, deckGap + deckSize / 2, canvas.height - deckSizeY - deckGap);
 
-        if(activePlayer.discardDeck.length > 0){ //draw discarddeck
-            drawCard(activePlayer.discardDeck[activePlayer.discardDeck.length - 1], deckGap*2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize);
-        }else{
-            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap*2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
+
+        if (activePlayer.discardDeck.length > 0) { //draw discarddeck
+            drawCard(activePlayer.discardDeck[activePlayer.discardDeck.length - 1], deckGap * 2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize);
+        } else {
+            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap * 2 + deckSize, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
         }
-        
-        ctx.fillText(activePlayer.discardDeck.length, deckGap + deckSize/2*3, canvas.height - deckSizeY - deckGap);
+
+        ctx.fillText(activePlayer.discardDeck.length, deckGap + deckSize / 2 * 3, canvas.height - deckSizeY - deckGap);
 
 
 
         //Draw passiveplayer with decks
-        ctx.drawImage(passivePlayer.image, deckGap + deckSize/2, deckGap*2 + deckSizeY, deckSize, deckSizeY);
+        ctx.drawImage(passivePlayer.image, deckGap + deckSize / 2, deckGap * 2 + deckSizeY, deckSize, deckSizeY);
 
         ctx.font = '25px arial';
 
-        ctx.fillText(passivePlayer.health, deckGap + deckSize, deckGap*2 + deckSizeY + deckSizeY/32*29);
+        ctx.fillText(passivePlayer.health, deckGap + deckSize, deckGap * 2 + deckSizeY + deckSizeY / 32 * 29);
 
-        if(passivePlayer.deck.length > 0){
+        if (passivePlayer.deck.length > 0) {
             ctx.drawImage(document.getElementById("BackSideImage"), deckGap, deckGap, deckSize, deckSizeY);
-        }else{
+        } else {
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, deckGap, deckSize, deckSizeY);
         }
 
         ctx.font = '30px arial';
-        ctx.fillText(passivePlayer.deck.length, deckGap + deckSize/2, deckSizeY + deckGap + 35);
+        ctx.fillText(passivePlayer.deck.length, deckGap + deckSize / 2, deckSizeY + deckGap + 35);
 
-        
-        
-        if(passivePlayer.discardDeck.length > 0){
-            drawCard(passivePlayer.discardDeck[passivePlayer.discardDeck.length - 1], deckGap*2 + deckSize, deckGap, deckSize);
-        }else{
-            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap*2 + deckSize, deckGap, deckSize, deckSizeY);
+
+
+        if (passivePlayer.discardDeck.length > 0) {
+            drawCard(passivePlayer.discardDeck[passivePlayer.discardDeck.length - 1], deckGap * 2 + deckSize, deckGap, deckSize);
+        } else {
+            ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap * 2 + deckSize, deckGap, deckSize, deckSizeY);
         }
 
 
-        ctx.fillText(passivePlayer.discardDeck.length, deckGap + deckSize/2*3, deckSizeY + deckGap + 35);
-        
+        ctx.fillText(passivePlayer.discardDeck.length, deckGap + deckSize / 2 * 3, deckSizeY + deckGap + 35);
+
 
 
 
@@ -233,82 +233,82 @@ function repaint(){
         drawPassiveHand(passivePlayer.hand);
         drawActiveCreatures(activePlayer.creatures);
         drawPassiveCreatures(passivePlayer.creatures);
-        if(selectedHandCardInt != -1) drawHandCardSelection();
-        if(selectedActiveCreatureInt != -1) drawActiveCreatureSelection();
+        if (selectedHandCardInt != -1) drawHandCardSelection();
+        if (selectedActiveCreatureInt != -1) drawActiveCreatureSelection();
 
-        if(isTargetingMode){
-            ctx.drawImage(document.getElementById("CastingFieldActiveImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
-        }else{
-            ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width/2 - castingFieldSize/2, canvas.height/2 - castingFieldSizeY/2, castingFieldSize, castingFieldSizeY);
+        if (isTargetingMode) {
+            ctx.drawImage(document.getElementById("CastingFieldActiveImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
+        } else {
+            ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
             ctx.drawImage(document.getElementById("EndTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
         }
-        
 
-        
+
+
     }
 
-    if(turnStatus == 0){//Between turns
+    if (turnStatus == 0) {//Between turns
 
-        ctx.drawImage(passivePlayer.image, canvas.width/2 - handCardSize/2, canvas.height/2 - handCardSizeY/2, handCardSize, handCardSizeY);
+        ctx.drawImage(passivePlayer.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2, handCardSize, handCardSizeY);
 
 
         ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
-    if(turnStatus == 3){ //Winning screen
-        ctx.drawImage(winner.image, canvas.width/2 - handCardSize/2, canvas.height/2 - handCardSizeY/2, handCardSize, handCardSizeY);
+    if (turnStatus == 3) { //Winning screen
+        ctx.drawImage(winner.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2, handCardSize, handCardSizeY);
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillStyle = 'white';
         ctx.font = '35px arial';
 
-        ctx.fillText("won", canvas.width/2 - handCardSize/2, canvas.height/2 - handCardSizeY/2);
+        ctx.fillText("won", canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2);
     }
-    
+
 }
 
-function drawDraftableCards(){
+function drawDraftableCards() {
     let l = draftableCards.length;
-    for(let i = 0; i < l; i++){
-        drawCard(draftableCards[i], (canvas.width/2) - (l * (draftableCardSize + draftableCardGap) / 2) + i * (draftableCardSize + draftableCardGap),
-          draftableCardGap, draftableCardSize);
+    for (let i = 0; i < l; i++) {
+        drawCard(draftableCards[i], (canvas.width / 2) - (l * (draftableCardSize + draftableCardGap) / 2) + i * (draftableCardSize + draftableCardGap),
+            draftableCardGap, draftableCardSize);
     }
 }
 
-function drawStones(){
+function drawStones() {
     let mStones = activePlayer.maxStones;
     let fStones = activePlayer.fullStones;
 
-    for(let i = 0; i < mStones; i++){
+    for (let i = 0; i < mStones; i++) {
         let image;
-        if(i < fStones){
+        if (i < fStones) {
             image = document.getElementById("StoneImage");
-        }else{
+        } else {
             image = document.getElementById("EmptyStoneImage");
         }
 
-        ctx.drawImage(image,  i * stoneSize, canvas.height/2 - stoneSize/2, stoneSize, stoneSize);
+        ctx.drawImage(image, i * stoneSize, canvas.height / 2 - stoneSize / 2, stoneSize, stoneSize);
     }
 }
 
-function drawHandCardSelection(){
-    ctx.drawImage(document.getElementById("SelectedImage"), 
-        (canvas.width/2) - (activePlayer.hand.length * (handCardSize + handCardGap) / 2) + selectedHandCardInt * (handCardSize + handCardGap),
+function drawHandCardSelection() {
+    ctx.drawImage(document.getElementById("SelectedImage"),
+        (canvas.width / 2) - (activePlayer.hand.length * (handCardSize + handCardGap) / 2) + selectedHandCardInt * (handCardSize + handCardGap),
         canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
 }
 
-function drawActiveCreatureSelection(){
-    ctx.drawImage(document.getElementById("SelectedImage"), 
-        (canvas.width/2) - (activePlayer.creatures.length * (creatureSize + creatureGap) / 2) + selectedActiveCreatureInt * (creatureSize + creatureGap),
+function drawActiveCreatureSelection() {
+    ctx.drawImage(document.getElementById("SelectedImage"),
+        (canvas.width / 2) - (activePlayer.creatures.length * (creatureSize + creatureGap) / 2) + selectedActiveCreatureInt * (creatureSize + creatureGap),
         canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize, creatureSizeY);
 }
-function drawActiveHand(hand){
+function drawActiveHand(hand) {
 
 
-    for(let i = 0; i < hand.length; i++){
-        drawCard(hand[i], (canvas.width/2) - (hand.length * (handCardSize + handCardGap) / 2) + i * (handCardSize + handCardGap),
-          canvas.height - handCardSizeY - handCardGap, handCardSize);
+    for (let i = 0; i < hand.length; i++) {
+        drawCard(hand[i], (canvas.width / 2) - (hand.length * (handCardSize + handCardGap) / 2) + i * (handCardSize + handCardGap),
+            canvas.height - handCardSizeY - handCardGap, handCardSize);
     }
 
     // for(let i = 0; i < hand.length; i++){
@@ -316,32 +316,32 @@ function drawActiveHand(hand){
     // }
 }
 
-function drawPassiveHand(hand){
+function drawPassiveHand(hand) {
 
-    for(let i = 0; i < hand.length; i++){
+    for (let i = 0; i < hand.length; i++) {
         //drawCard(hand[i], (handCardSize + handCardGap ) * i + handCardGap, canvas.height - handCardSize * Math.sqrt(2) - handCardGap, handCardSize);
-        ctx.drawImage(document.getElementById("BackSideImage"), (canvas.width/2) - (hand.length * (handCardSize + handCardGap) / 2) + i * (handCardSize + handCardGap),
-        handCardGap, handCardSize, handCardSizeY);
+        ctx.drawImage(document.getElementById("BackSideImage"), (canvas.width / 2) - (hand.length * (handCardSize + handCardGap) / 2) + i * (handCardSize + handCardGap),
+            handCardGap, handCardSize, handCardSizeY);
     }
 }
 
-function drawActiveCreatures(creatures){
+function drawActiveCreatures(creatures) {
 
-    for(let i = 0; i < creatures.length; i++){
-        drawCreature(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
-        canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize);
+    for (let i = 0; i < creatures.length; i++) {
+        drawCreature(creatures[i], (canvas.width / 2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+            canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize);
     }
 }
 
-function drawPassiveCreatures(creatures){
+function drawPassiveCreatures(creatures) {
 
-    for(let i = 0; i < creatures.length; i++){
-        drawCreature(creatures[i], (canvas.width/2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
-        handCardSizeY + handCardGap + creatureGap, creatureSize);
+    for (let i = 0; i < creatures.length; i++) {
+        drawCreature(creatures[i], (canvas.width / 2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+            handCardSizeY + handCardGap + creatureGap, creatureSize);
     }
 }
 
-function drawCard(card, x, y, size){
+function drawCard(card, x, y, size) {
     ctx.drawImage(card.image, x, y, size, size * Math.sqrt(2));
 
     ctx.font = '13px arial';
@@ -349,7 +349,7 @@ function drawCard(card, x, y, size){
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = 'white';
 
-    for(let i = 0; i < card.cardtext.length; i++){
+    for (let i = 0; i < card.cardtext.length; i++) {
         ctx.fillText(card.cardtext[i], x + size / 2, y + size / 16 * (10 + i * 1.5) * Math.sqrt(2));
     }
 
@@ -358,7 +358,7 @@ function drawCard(card, x, y, size){
     ctx.fillText(card.cost, x + size * 27 / 32, y + size * Math.sqrt(2) * 31 / 32);
 }
 
-function drawCreature(creature, x, y, size){
+function drawCreature(creature, x, y, size) {
     ctx.drawImage(creature.image, x, y, size, size * Math.sqrt(2));
 
 
@@ -366,26 +366,26 @@ function drawCreature(creature, x, y, size){
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = 'white';
-    ctx.fillText(creature.attack, x + size / 8, y + size * Math.sqrt(2) , 100);
+    ctx.fillText(creature.attack, x + size / 8, y + size * Math.sqrt(2), 100);
     ctx.fillText(creature.defense, x + size / 8 * 7, y + size * Math.sqrt(2), 100);
 
 
-    if(!creature.isReady){
+    if (!creature.isReady) {
         ctx.drawImage(document.getElementById("NotReadyImage"), x, y, size, size * Math.sqrt(2));
     }
 }
 
-function mouseClicked(event){
+function mouseClicked(event) {
     var x = event.clientX;     // Get the horizontal coordinate
     var y = event.clientY;     // Get the vertical coordinate
 
-    if(turnStatus == 0){
+    if (turnStatus == 0) {
         mouseClickedBetweenTurns(x, y);
-    }else if(turnStatus == 1){
+    } else if (turnStatus == 1) {
         mouseClickedMidTurn(x, y);
     }
 
-    
+
 
 
     repaint();
@@ -398,121 +398,128 @@ function mouseClicked(event){
     //activePlayer.hand.push(new CardGoblin());
 }
 
-function mouseClickedBetweenTurns(x, y){
+function mouseClickedBetweenTurns(x, y) {
 
-    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
-    && x > canvas.width - turnButtonSize){ 
+    if ((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
+        && x > canvas.width - turnButtonSize) {
         nextTurn();
     }
 
 }
 
-function clickedHandcards(x, y){
-    var selectedHandCardIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap)/2 )) / (handCardSize + handCardGap) );
+function clickedHandcards(x, y) {
+    var selectedHandCardIntTemp = Math.trunc((x - (canvas.width / 2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2)) / (handCardSize + handCardGap));
 
-            if(!(selectedHandCardIntTemp > activePlayer.hand.length - 1)){
-                if(selectedHandCardInt == selectedHandCardIntTemp){
-                    selectedHandCardInt = -1;
-                }else{
-                    selectedHandCardInt = selectedHandCardIntTemp;
-                    selectedActiveCreatureInt = -1;
-                }
+    if (!(selectedHandCardIntTemp > activePlayer.hand.length - 1)) {
+        if (selectedHandCardInt == selectedHandCardIntTemp) {
+            selectedHandCardInt = -1;
+        } else {
+            selectedHandCardInt = selectedHandCardIntTemp;
+            selectedActiveCreatureInt = -1;
+        }
+    }
+}
+
+function clickedActiveCreatures(x, y) {
+    var selectedActiveCreatureIntTemp = Math.trunc((x - (canvas.width / 2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2)) / (creatureSize + creatureGap));
+
+    if (!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)) {
+        if (selectedActiveCreatureInt == selectedActiveCreatureIntTemp) {
+            selectedActiveCreatureInt = -1;
+        } else {
+            if (activePlayer.creatures[selectedActiveCreatureIntTemp].isReady) {
+                selectedActiveCreatureInt = selectedActiveCreatureIntTemp;
+                selectedHandCardInt = -1;
             }
+
+        }
+    }
 }
 
-function clickedActiveCreatures(x, y){
-    var selectedActiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
+function clickedPassiveCreatures(x, y) {
 
-            if(!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)){
-                    if(selectedActiveCreatureInt == selectedActiveCreatureIntTemp){
-                        selectedActiveCreatureInt = -1;
-                    }else{
-                        if(activePlayer.creatures[selectedActiveCreatureIntTemp].isReady){
-                            selectedActiveCreatureInt = selectedActiveCreatureIntTemp;
-                            selectedHandCardInt = -1;
-                        }
-                        
-                    }
-                } 
+
+    var selectedPassiveCreatureIntTemp = Math.trunc((x - (canvas.width / 2 - passivePlayer.creatures.length * (creatureSize + creatureGap) / 2)) / (creatureSize + creatureGap));
+    if(!(selectedPassiveCreatureIntTemp < passivePlayer.creatures.length))return; // no creature clicked
+
+    if(isTargetingMode && isValidPassiveCreatures){
+        currentTargetingSpell.play(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
+    }
+
+    if (selectedActiveCreatureInt != -1) {
+        activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
+        
+        selectedActiveCreatureInt = -1;
+    }
 }
 
-function clickedPassiveCreatures(x, y){
-    var selectedPassiveCreatureIntTemp = Math.trunc((x - (canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap)/2 )) / (creatureSize + creatureGap) );
-
-
-            
-
-            if(selectedActiveCreatureInt != -1 && selectedPassiveCreatureIntTemp < passivePlayer.creatures.length){
-                activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
-                activePlayer.checkDeaths();
-                passivePlayer.checkDeaths();
-                selectedActiveCreatureInt = -1;
-            }
-}
-
-function clickedActivePlayer(x, y){
+function clickedActivePlayer(x, y) {
     //todo
 }
 
-function clickedPassivePlayer(x, y){
-    if(selectedActiveCreatureInt != -1){
+function clickedPassivePlayer(x, y) {
+    if (selectedActiveCreatureInt != -1) {
         activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
         selectedActiveCreatureInt = -1;
     }
 }
 
-function mouseClickedMidTurn(x, y){
+function mouseClickedMidTurn(x, y) {
 
-    if((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
-    && x > canvas.width - turnButtonSize){ 
-        endTurn();
+    if ((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
+        && x > canvas.width - turnButtonSize) {
+            if(!isTargetingMode)
+                endTurn();
     }
 
-    if(y >= (canvas.height - handCardSizeY - handCardGap)){ //handcards clicked
-        if((x >= canvas.width/2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2) 
-            && (x <= canvas.width/2 + activePlayer.hand.length * (handCardSize + handCardGap)/2)){
+    if (y >= (canvas.height - handCardSizeY - handCardGap)) { //handcards clicked
+        if ((x >= canvas.width / 2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2)
+            && (x <= canvas.width / 2 + activePlayer.hand.length * (handCardSize + handCardGap) / 2)) {
 
-                clickedHandcards(x, y);
-            
+            clickedHandcards(x, y);
+
         }
     }
 
-    if((y >= (canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap)) && y <= canvas.height - handCardSizeY - handCardGap){ //active creatures clicked
-        if((x >= canvas.width/2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
-            && (x <= canvas.width/2 + activePlayer.creatures.length * (creatureSize + creatureGap)/2)){
+    if ((y >= (canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap)) && y <= canvas.height - handCardSizeY - handCardGap) { //active creatures clicked
+        if ((x >= canvas.width / 2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2)
+            && (x <= canvas.width / 2 + activePlayer.creatures.length * (creatureSize + creatureGap) / 2)) {
 
-                clickedActiveCreatures(x, y);
-            
-        }
-    }
+            clickedActiveCreatures(x, y);
 
-
-    if((y >= (handCardSizeY + handCardGap + creatureGap)) && y <= handCardSizeY + handCardGap + creatureGap + creatureSizeY){ //passive creatures clicked
-        if((x >= canvas.width/2 - passivePlayer.creatures.length * (creatureSize + creatureGap) / 2) 
-            && (x <= canvas.width/2 + passivePlayer.creatures.length * (creatureSize + creatureGap)/2)){
-
-                clickedPassiveCreatures(x, y);
-            
         }
     }
 
 
+    if ((y >= (handCardSizeY + handCardGap + creatureGap)) && y <= handCardSizeY + handCardGap + creatureGap + creatureSizeY) { //passive creatures clicked
+        if ((x >= canvas.width / 2 - passivePlayer.creatures.length * (creatureSize + creatureGap) / 2)
+            && (x <= canvas.width / 2 + passivePlayer.creatures.length * (creatureSize + creatureGap) / 2)) {
 
-    if(y >= (deckGap*2 + deckSizeY) && y <= (deckGap*2 + deckSizeY*2) && // passive player clicked
-        x >= deckGap + deckSize/2 && x <= deckGap + deckSize/2 * 3){ 
+            clickedPassiveCreatures(x, y);
+
+        }
+    }
+
+
+
+    if (y >= (deckGap * 2 + deckSizeY) && y <= (deckGap * 2 + deckSizeY * 2) && // passive player clicked
+        x >= deckGap + deckSize / 2 && x <= deckGap + deckSize / 2 * 3) {
         clickedPassivePlayer(x, y);
     }
 
 
-    if((y >= (canvas.height/2 - castingFieldSizeY/2)) && (y <= (canvas.height/2 + castingFieldSizeY/2)) //castingfield clicked
-    && (x >= (canvas.width/2 - castingFieldSize/2)) && (x <= (canvas.width/2 + castingFieldSize/2))){
-       castSelected();
-   }
+    if ((y >= (canvas.height / 2 - castingFieldSizeY / 2)) && (y <= (canvas.height / 2 + castingFieldSizeY / 2)) //castingfield clicked
+        && (x >= (canvas.width / 2 - castingFieldSize / 2)) && (x <= (canvas.width / 2 + castingFieldSize / 2))) {
+        castSelected();
+    }
+
+    activePlayer.checkDeaths();
+    passivePlayer.checkDeaths();
 
 }
 
-class Card{
-    constructor(name, image, cost){
+class Card {
+    constructor(name, image, cost) {
         this.name = name;
         this.image = image;
         this.cost = cost;
@@ -520,20 +527,20 @@ class Card{
 
     }
 
-    play(){
+    play() {
 
     }
 }
 
 
-class CardSpawnCreature extends Card{
+class CardSpawnCreature extends Card {
 
-    constructor(name, image, cost){
+    constructor(name, image, cost) {
         super(name, image, cost);
         this.spawnCreatures = [];
     }
 
-    play(){
+    play() {
         this.spawnCreatures.forEach(c => activePlayer.spawnCreature(c));
     }
 
@@ -541,8 +548,8 @@ class CardSpawnCreature extends Card{
 }
 
 
-class CardTargetingSpell extends Card{
-    constructor(name, image, cost){
+class CardTargetingSpell extends Card {
+    constructor(name, image, cost) {
         super(name, image, cost);
 
         this.isTargetingPassiveCreatures = false;
@@ -551,7 +558,12 @@ class CardTargetingSpell extends Card{
         this.isTargetingActivePlayer = false;
     }
 
-    play(target){
+    play(target) {
+        this.effect(target);
+        isTargetingMode = false;
+    }
+
+    effect(target){
 
     }
 
@@ -561,8 +573,8 @@ class CardTargetingSpell extends Card{
 
 
 
-class Creature{
-    constructor(name, image, attack, defense){
+class Creature {
+    constructor(name, image, attack, defense) {
         this.name = name;
         this.image = image;
         this.attack = attack;
@@ -570,19 +582,19 @@ class Creature{
         this.isReady = false;
     }
 
-    attackCreature(attackedCreature){
+    attackCreature(attackedCreature) {
         attackedCreature.takeHit(this.attack);
         this.takeHit(attackedCreature.attack);
         this.isReady = false;
-        
+
     }
 
-    attackPlayer(attackedPlayer){
+    attackPlayer(attackedPlayer) {
         attackedPlayer.takeHit(this.attack);
         this.isReady = false;
     }
 
-    takeHit(hitDamage = 0){
+    takeHit(hitDamage = 0) {
         this.defense -= hitDamage;
     }
 
@@ -595,8 +607,8 @@ class Creature{
 //----------------------------------------------------------------
 //Cards
 
-class CardFireBall extends CardTargetingSpell{
-    constructor(){
+class CardFireBall extends CardTargetingSpell {
+    constructor() {
         super("FireBall", document.getElementById("CardFireBallImage"), 2);
         this.cardtext.push("Deals 3 Damage");
         this.cardtext.push("to target enemy creature");
@@ -604,14 +616,14 @@ class CardFireBall extends CardTargetingSpell{
         this.isTargetingPassiveCreatures = true;
     }
 
-    play(target){
+    effect(target) {
         target.takeHit(3);
     }
 }
 
 
-class CardGoblin extends CardSpawnCreature{
-    constructor(){
+class CardGoblin extends CardSpawnCreature {
+    constructor() {
         super("CardGoblin", document.getElementById("CardGoblinImage"), 2);
         //this.cardtext = [];
         this.cardtext.push("Spawns a");
@@ -620,8 +632,8 @@ class CardGoblin extends CardSpawnCreature{
     }
 }
 
-class CardFireGoblin extends CardSpawnCreature{
-    constructor(){
+class CardFireGoblin extends CardSpawnCreature {
+    constructor() {
         super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2, "Spawns a\n3/1 FireGoblin");
         this.cardtext.push("Spawns a");
         this.cardtext.push("3/1 Firegoblin");
@@ -629,8 +641,8 @@ class CardFireGoblin extends CardSpawnCreature{
     }
 }
 
-class CardArmoredOgre extends CardSpawnCreature{
-    constructor(){
+class CardArmoredOgre extends CardSpawnCreature {
+    constructor() {
         super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 5, "Spawns a 2/5 Armored Ogre");
         this.cardtext.push("Spawns a");
         this.cardtext.push("2/5 Armored Ogre");
@@ -646,20 +658,20 @@ class CardArmoredOgre extends CardSpawnCreature{
 //----------------------------------------------------------------
 //Creatures
 
-class CreatureGoblin extends Creature{
-    constructor(){
+class CreatureGoblin extends Creature {
+    constructor() {
         super("Goblin", document.getElementById("CreatureGoblinImage"), 1, 2);
     }
 }
 
-class CreatureFireGoblin extends Creature{
-    constructor(){
+class CreatureFireGoblin extends Creature {
+    constructor() {
         super("FireGoblin", document.getElementById("CreatureFireGoblinImage"), 3, 1);
     }
 }
 
-class CreatureArmoredOgre extends Creature{
-    constructor(){
+class CreatureArmoredOgre extends Creature {
+    constructor() {
         super("ArmoredOgre", document.getElementById("CreatureArmoredOgreImage"), 2, 5);
     }
 }
@@ -672,8 +684,8 @@ class CreatureArmoredOgre extends Creature{
 //----------------------------------------------------------------
 //Player
 
-class Player{
-    constructor(name, image){
+class Player {
+    constructor(name, image) {
         this.name = name;
         this.image = image;
         this.hand = [];
@@ -699,37 +711,37 @@ class Player{
         this.creatures.push(new CreatureGoblin());
     }
 
-    spawnCreature(c){
+    spawnCreature(c) {
         this.creatures.push(c);
     }
 
-    fillStones(){
+    fillStones() {
         this.fullStones = this.maxStones;
     }
 
-    drawCard(){
-        if(this.deck.length > 0){
+    drawCard() {
+        if (this.deck.length > 0) {
             this.hand.push(this.deck.pop());
         }
-        
+
     }
 
-    checkDeaths(){
+    checkDeaths() {
         //selectedHandCardInt = 1;
-        for(let i = 0; i < this.creatures.length; i++){
-            if(this.creatures[i].defense <= 0){
+        for (let i = 0; i < this.creatures.length; i++) {
+            if (this.creatures[i].defense <= 0) {
                 this.creatures.splice(i, 1);
             }
         }
     }
 
-    readyAllCreatures(){
-        for(let i = 0; i < this.creatures.length; i++){
+    readyAllCreatures() {
+        for (let i = 0; i < this.creatures.length; i++) {
             this.creatures[i].isReady = true;
         }
     }
 
-    takeHit(damage){
+    takeHit(damage) {
         this.health -= damage;
         checkWin();
     }
