@@ -668,6 +668,14 @@ class CardArmoredOgre extends CardSpawnCreature {
         this.spawnCreatures.push(new CreatureArmoredOgre());
     }
 }
+class CardCrocodile extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardCrocodileImage"), 5);
+        this.cardtext.push("Spawns a");
+        this.cardtext.push("4/4 Crocodile");
+        this.spawnCreatures.push(new CreatureCrocodile());
+    }
+}
 //----------------------------------------------------------------
 
 
@@ -692,6 +700,12 @@ class CreatureFireGoblin extends Creature {
 class CreatureArmoredOgre extends Creature {
     constructor() {
         super("ArmoredOgre", document.getElementById("CreatureArmoredOgreImage"), 2, 5);
+    }
+}
+
+class CreatureCrocodile extends Creature {
+    constructor(){
+        super("Crocodile", document.getElementById("CreatureCrocodileImage"), 4, 4);
     }
 }
 //----------------------------------------------------------------
@@ -722,6 +736,7 @@ class Player {
         this.deck.push(new CardGoblin());
         this.deck.push(new CardArmoredOgre());
         this.deck.push(new CardFireBall());
+        this.deck.push(new CardCrocodile());
 
         this.discardDeck = [];
 
