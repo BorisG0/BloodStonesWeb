@@ -92,6 +92,16 @@ function startDraft() {
 
 
 function castSelected() {
+
+    if(isTargetingMode){
+        activePlayer.hand.push(currentTargetingSpell);
+        isTargetingMode = false;
+        activePlayer.fullStones += currentTargetingSpell.cost;
+        return;
+
+    }
+
+
     if (selectedHandCardInt != -1 && activePlayer.fullStones >= activePlayer.hand[selectedHandCardInt].cost) {
         activePlayer.fullStones -= activePlayer.hand[selectedHandCardInt].cost;
 
@@ -110,9 +120,10 @@ function castSelected() {
 
         } else {
             activePlayer.hand[selectedHandCardInt].play();
+            activePlayer.discardDeck.push(activePlayer.hand[selectedHandCardInt]);
         }
 
-        activePlayer.discardDeck.push(activePlayer.hand[selectedHandCardInt]);
+        
         activePlayer.hand.splice(selectedHandCardInt, 1);
         selectedHandCardInt = -1;
     }
@@ -561,6 +572,7 @@ class CardTargetingSpell extends Card {
     play(target) {
         this.effect(target);
         isTargetingMode = false;
+        activePlayer.discardDeck.push(this);
     }
 
     effect(target){
