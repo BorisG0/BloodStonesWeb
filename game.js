@@ -460,11 +460,11 @@ function mouseClickedMidTurn(x, y){
 }
 
 class Card{
-    constructor(name, image, cost, cardtext){
+    constructor(name, image, cost){
         this.name = name;
         this.image = image;
         this.cost = cost;
-        this.cardtext = cardtext;
+        this.cardtext = [];
 
     }
 
@@ -472,6 +472,37 @@ class Card{
 
     }
 }
+
+
+class CardSpawnCreature extends Card{
+
+    constructor(name, image, cost){
+        super(name, image, cost);
+        this.spawnCreatures = [];
+    }
+
+    play(){
+        this.spawnCreatures.forEach(c => activePlayer.spawnCreature(c));
+    }
+
+
+}
+
+
+class CardTargetingSpell extends Card{
+    constructor(name, image, cost){
+        super(name, image, cost);
+        
+        this.isTargetingPassiveCreatures = false;
+        this.isTargetingActiveCreatures = false;
+        this.isTargetingPassivePlayer = false;
+        this.isTargetingActivePlayer = false;
+    }
+}
+
+
+
+
 
 class Creature{
     constructor(name, image, attack, defense){
@@ -507,42 +538,31 @@ class Creature{
 //----------------------------------------------------------------
 //Cards
 
-class CardGoblin extends Card{
+class CardGoblin extends CardSpawnCreature{
     constructor(){
-        super("CardGoblin", document.getElementById("CardGoblinImage"), 2, "Spawns a 1/2 Goblin");
-        this.cardtext = [];
+        super("CardGoblin", document.getElementById("CardGoblinImage"), 2);
+        //this.cardtext = [];
         this.cardtext.push("Spawns a");
         this.cardtext.push("1/2 Goblin");
-    }
-
-    play(){
-        activePlayer.creatures.push(new CreatureGoblin());
+        this.spawnCreatures.push(new CreatureGoblin());
     }
 }
 
-class CardFireGoblin extends Card{
+class CardFireGoblin extends CardSpawnCreature{
     constructor(){
         super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2, "Spawns a\n3/1 FireGoblin");
-        this.cardtext = [];
         this.cardtext.push("Spawns a");
-        this.cardtext.push("3/1 Firegoblin")
-    }
-
-    play(){
-        activePlayer.creatures.push(new CreatureFireGoblin());
+        this.cardtext.push("3/1 Firegoblin");
+        this.spawnCreatures.push(new CreatureFireGoblin());
     }
 }
 
-class CardArmoredOgre extends Card{
+class CardArmoredOgre extends CardSpawnCreature{
     constructor(){
         super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 5, "Spawns a 2/5 Armored Ogre");
-        this.cardtext = [];
         this.cardtext.push("Spawns a");
-        this.cardtext.push("2/5 Armored Ogre")
-    }
-
-    play(){
-        activePlayer.creatures.push(new CreatureArmoredOgre());
+        this.cardtext.push("2/5 Armored Ogre");
+        this.spawnCreatures.push(new CreatureArmoredOgre());
     }
 }
 //----------------------------------------------------------------
@@ -604,6 +624,10 @@ class Player{
         this.creatures = [];
         this.creatures.push(new CreatureGoblin());
         this.creatures.push(new CreatureGoblin());
+    }
+
+    spawnCreature(c){
+        this.creatures.push(c);
     }
 
     fillStones(){
