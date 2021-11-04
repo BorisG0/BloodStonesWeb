@@ -469,6 +469,12 @@ function clickedActivePlayer(x, y) {
 }
 
 function clickedPassivePlayer(x, y) {
+
+    if(isTargetingMode && isValidPassivePlayer){
+        currentTargetingSpell.play(passivePlayer);
+    }
+
+
     if (selectedActiveCreatureInt != -1) {
         activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
         selectedActiveCreatureInt = -1;
@@ -623,9 +629,10 @@ class CardFireBall extends CardTargetingSpell {
     constructor() {
         super("FireBall", document.getElementById("CardFireBallImage"), 2);
         this.cardtext.push("Deals 3 Damage");
-        this.cardtext.push("to target enemy creature");
+        this.cardtext.push("to target enemy");
 
         this.isTargetingPassiveCreatures = true;
+        this.isTargetingPassivePlayer = true;
     }
 
     effect(target) {
