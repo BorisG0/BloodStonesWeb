@@ -14,7 +14,7 @@ var canvas, ctx;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
-var turnStatus = 0; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen
+var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen
 
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -33,6 +33,8 @@ var draftableCards;
 var draftableCardSize = 150;
 var draftableCardSizeY = draftableCardSize * Math.sqrt(2);
 var draftableCardGap = 15;
+
+var selectedDraftableCardInt = -1;
 
 var winner, loser;
 
@@ -172,6 +174,10 @@ function repaint() {
         ctx.lineTo(canvas.width / 2 - 3, canvas.height);
         ctx.stroke();
 
+        if(selectedDraftableCardInt != -1){
+            drawDraftableCardSelection();
+        }
+
         ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
     }
 
@@ -309,6 +315,12 @@ function drawHandCardSelection() {
         canvas.height - handCardSizeY - handCardGap, handCardSize, handCardSizeY);
 }
 
+function drawDraftableCardSelection(){
+    ctx.drawImage(document.getElementById("SelectedImage"),
+        (canvas.width / 2) - (draftableCards.length * (draftableCardSize + draftableCardGap) / 2) + selectedDraftableCardInt * (draftableCardSize + draftableCardGap),
+        draftableCardGap, draftableCardSize, draftableCardSizeY);
+}
+
 function drawActiveCreatureSelection() {
     ctx.drawImage(document.getElementById("SelectedImage"),
         (canvas.width / 2) - (activePlayer.creatures.length * (creatureSize + creatureGap) / 2) + selectedActiveCreatureInt * (creatureSize + creatureGap),
@@ -394,19 +406,41 @@ function mouseClicked(event) {
         mouseClickedBetweenTurns(x, y);
     } else if (turnStatus == 1) {
         mouseClickedMidTurn(x, y);
+    } else if (turnStatus == 2){
+        mouseClickedDraft(x, y);
     }
 
 
 
 
     repaint();
-    console.log("--------------------------------------");
-    console.log("selected handcard: " + selectedHandCardInt);
-    console.log("selected activeCreature: " + selectedActiveCreatureInt);
-    console.log("activePlayer creatures: " + activePlayer.creatures.length);
-    console.log("passivePlayer creatures: " + passivePlayer.creatures.length);
-    console.log("turnstatus: " + turnStatus);
+    // console.log("--------------------------------------");
+    // console.log("selected handcard: " + selectedHandCardInt);
+    // console.log("selected activeCreature: " + selectedActiveCreatureInt);
+    // console.log("activePlayer creatures: " + activePlayer.creatures.length);
+    // console.log("passivePlayer creatures: " + passivePlayer.creatures.length);
+    // console.log("turnstatus: " + turnStatus);
     //activePlayer.hand.push(new CardGoblin());
+}
+
+function mouseClickedDraft(x, y){
+    if(y >= draftableCardGap && y <= draftableCardGap + draftableCardSizeY){
+        var selectedDraftableCardIntTemp 
+        = Math.trunc((x - (canvas.width / 2 - draftableCards.length * (draftableCardSize + draftableCardGap) / 2)) / (draftableCardSize + draftableCardGap));
+
+        console.log(Math.sign(selectedDraftableCardIntTemp));
+        if(selectedDraftableCardIntTemp == 'undefined') return;
+
+
+        if (!(selectedDraftableCardIntTemp > draftableCards.length - 1)) {
+            if (selectedDraftableCardInt == selectedDraftableCardIntTemp) {
+                selectedDraftableCardInt = -1;
+            } else {
+                selectedDraftableCardInt = selectedDraftableCardIntTemp;
+    
+            }
+        }
+    }
 }
 
 function mouseClickedBetweenTurns(x, y) {
@@ -434,6 +468,7 @@ function clickedHandcards(x, y) {
 function clickedActiveCreatures(x, y) {
     var selectedActiveCreatureIntTemp = Math.trunc((x - (canvas.width / 2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2)) / (creatureSize + creatureGap));
 
+    console.log(selectedActiveCreatureIntTemp);
     if (!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)) {
         if (selectedActiveCreatureInt == selectedActiveCreatureIntTemp) {
             selectedActiveCreatureInt = -1;
