@@ -441,6 +441,18 @@ function mouseClickedDraft(x, y){
             }
         }
     }
+
+
+    if ((y >= (canvas.height / 2 - castingFieldSizeY / 2)) && (y <= (canvas.height / 2 + castingFieldSizeY / 2)) //castingfield clicked
+        && (x >= (canvas.width / 2 - castingFieldSize / 2)) && (x <= (canvas.width / 2 + castingFieldSize / 2))) {
+            draftSelected();
+    }
+}
+
+function draftSelected(){
+    activePlayer.deck.push(draftableCards[selectedDraftableCardInt]);
+    draftableCards.splice(selectedDraftableCardInt, 1);
+    selectedDraftableCardInt = -1;
 }
 
 function mouseClickedBetweenTurns(x, y) {
