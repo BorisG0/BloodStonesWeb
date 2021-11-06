@@ -36,6 +36,10 @@ var draftableCardGap = 15;
 
 var selectedDraftableCardInt = -1;
 
+var draftTurn = 1;
+
+
+
 var winner, loser;
 
 
@@ -84,11 +88,30 @@ function startGame() {
 
 function startDraft() {
     draftableCards = [];
-    draftableCards.push(new CardArmoredOgre());
-    draftableCards.push(new CardFireGoblin());
-    draftableCards.push(new CardGoblin());
-    draftableCards.push(new CardGoblin());
-    draftableCards.push(new CardGoblin());
+
+
+    let dfc0 = []; //draftable Cards 0
+
+    dfc0.push(new CardArmoredOgre());
+    dfc0.push(new CardFireGoblin());
+    dfc0.push(new CardGoblin());
+    dfc0.push(new CardGoblin());
+    dfc0.push(new CardGoblin());
+
+    draftableCards.push(dfc0);
+
+
+    let dfc1 = []; //draftable Cards 1
+
+    dfc1.push(new CardArmoredOgre());
+    dfc1.push(new CardFireGoblin());
+    dfc1.push(new CardCrocodile());
+    dfc1.push(new CardFireGoblin());
+    dfc1.push(new CardFireGoblin());
+
+    draftableCards.push(dfc1);
+
+
 }
 
 
@@ -167,12 +190,12 @@ function repaint() {
 
         drawDraftableCards();
 
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 6;
-        ctx.beginPath();
-        ctx.moveTo(canvas.width / 2 - 3, 0);
-        ctx.lineTo(canvas.width / 2 - 3, canvas.height);
-        ctx.stroke();
+        // ctx.strokeStyle = 'red';
+        // ctx.lineWidth = 6;
+        // ctx.beginPath();
+        // ctx.moveTo(canvas.width / 2 - 3, 0);
+        // ctx.lineTo(canvas.width / 2 - 3, canvas.height);
+        // ctx.stroke();
 
         if(selectedDraftableCardInt != -1){
             drawDraftableCardSelection();
@@ -286,9 +309,10 @@ function repaint() {
 }
 
 function drawDraftableCards() {
-    let l = draftableCards.length;
+    let l = draftableCards[draftTurn].length;
+    let dfc = draftableCards[draftTurn];
     for (let i = 0; i < l; i++) {
-        drawCard(draftableCards[i], (canvas.width / 2) - (l * (draftableCardSize + draftableCardGap) / 2) + i * (draftableCardSize + draftableCardGap),
+        drawCard(dfc[i], (canvas.width / 2) - (l * (draftableCardSize + draftableCardGap) / 2) + i * (draftableCardSize + draftableCardGap),
             draftableCardGap, draftableCardSize);
     }
 }
