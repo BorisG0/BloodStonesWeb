@@ -36,7 +36,8 @@ var draftableCardGap = 15;
 
 var selectedDraftableCardInt = -1;
 
-var draftTurn = 1;
+var draftTurn = 0;
+var maxDeckSize = 30;
 
 
 
@@ -90,26 +91,26 @@ function startDraft() {
     draftableCards = [];
 
 
-    let dfc0 = []; //draftable Cards 0
+    let dfc = []; //draftable Cards 0
 
-    dfc0.push(new CardArmoredOgre());
-    dfc0.push(new CardFireGoblin());
-    dfc0.push(new CardGoblin());
-    dfc0.push(new CardGoblin());
-    dfc0.push(new CardGoblin());
+    dfc.push(new CardArmoredOgre());
+    dfc.push(new CardFireGoblin());
+    dfc.push(new CardGoblin());
+    dfc.push(new CardGoblin());
+    dfc.push(new CardGoblin());
 
-    draftableCards.push(dfc0);
+    draftableCards.push(dfc);
 
 
-    let dfc1 = []; //draftable Cards 1
+    dfc = []; //draftable Cards 1
 
-    dfc1.push(new CardArmoredOgre());
-    dfc1.push(new CardFireGoblin());
-    dfc1.push(new CardCrocodile());
-    dfc1.push(new CardFireGoblin());
-    dfc1.push(new CardFireGoblin());
+    dfc.push(new CardArmoredOgre());
+    dfc.push(new CardFireGoblin());
+    dfc.push(new CardCrocodile());
+    dfc.push(new CardFireGoblin());
+    dfc.push(new CardFireGoblin());
 
-    draftableCards.push(dfc1);
+    draftableCards.push(dfc);
 
 
 }
@@ -188,6 +189,7 @@ function repaint() {
 
     if (turnStatus == 2) { //Draft
 
+        if(draftTurn < draftableCards.length)
         drawDraftableCards();
 
         // ctx.strokeStyle = 'red';
@@ -202,6 +204,15 @@ function repaint() {
         }
 
         ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
+
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = 'white';
+        ctx.font = '25px arial';
+
+        ctx.fillText(activePlayer.deck.length + "/" + maxDeckSize, canvas.width/2, canvas.height/4*3);
+
     }
 
     if (turnStatus == 1) {//Midturn
@@ -341,7 +352,7 @@ function drawHandCardSelection() {
 
 function drawDraftableCardSelection(){
     ctx.drawImage(document.getElementById("SelectedImage"),
-        (canvas.width / 2) - (draftableCards.length * (draftableCardSize + draftableCardGap) / 2) + selectedDraftableCardInt * (draftableCardSize + draftableCardGap),
+        (canvas.width / 2) - (draftableCards[draftTurn].length * (draftableCardSize + draftableCardGap) / 2) + selectedDraftableCardInt * (draftableCardSize + draftableCardGap),
         draftableCardGap, draftableCardSize, draftableCardSizeY);
 }
 
@@ -450,13 +461,13 @@ function mouseClicked(event) {
 function mouseClickedDraft(x, y){
     if(y >= draftableCardGap && y <= draftableCardGap + draftableCardSizeY){
         var selectedDraftableCardIntTemp 
-        = Math.trunc((x - (canvas.width / 2 - draftableCards.length * (draftableCardSize + draftableCardGap) / 2)) / (draftableCardSize + draftableCardGap));
+        = Math.trunc((x - (canvas.width / 2 - draftableCards[draftTurn].length * (draftableCardSize + draftableCardGap) / 2)) / (draftableCardSize + draftableCardGap));
 
         console.log(Math.sign(selectedDraftableCardIntTemp));
         if(selectedDraftableCardIntTemp == 'undefined') return;
 
 
-        if (!(selectedDraftableCardIntTemp > draftableCards.length - 1)) {
+        if (!(selectedDraftableCardIntTemp > draftableCards[draftTurn].length - 1)) {
             if (selectedDraftableCardInt == selectedDraftableCardIntTemp) {
                 selectedDraftableCardInt = -1;
             } else {
@@ -474,9 +485,10 @@ function mouseClickedDraft(x, y){
 }
 
 function draftSelected(){
-    activePlayer.deck.push(draftableCards[selectedDraftableCardInt]);
-    draftableCards.splice(selectedDraftableCardInt, 1);
+    activePlayer.deck.push(draftableCards[draftTurn][selectedDraftableCardInt]);
+    //draftableCards.splice(selectedDraftableCardInt, 1);
     selectedDraftableCardInt = -1;
+    draftTurn++;
 }
 
 function mouseClickedBetweenTurns(x, y) {
