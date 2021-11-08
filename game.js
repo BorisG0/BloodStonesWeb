@@ -93,60 +93,42 @@ function startDraft() {
 
     let dfc = []; //draftable Cards
 
-    dfc.push(new CardArmoredOgre());
-    dfc.push(new CardFireGoblin());
-    dfc.push(new CardGoblin());
-    dfc.push(new CardGoblin());
-    dfc.push(new CardGoblin());
-
-    draftableCards.push(dfc);
-
-
-    dfc = [];
-
-    dfc.push(new CardArmoredOgre());
-    dfc.push(new CardFireGoblin());
-    dfc.push(new CardCrocodile());
-    dfc.push(new CardFireGoblin());
-    dfc.push(new CardFireGoblin());
-
-    draftableCards.push(dfc);
-
-
-    dfc = [];
-
-    dfc.push(new CardArmoredOgre());
-    dfc.push(new CardFireGoblin());
-    dfc.push(new CardFireBall());
-    dfc.push(new CardFireGoblin());
-    dfc.push(new CardFireGoblin());
-
-    draftableCards.push(dfc);
-
-
-    dfc = [];
-
-    dfc.push(new CardFireBall());
-    dfc.push(new CardFireBall());
-    dfc.push(new CardCrocodile());
-    dfc.push(new CardFireGoblin());
-    dfc.push(new CardFireGoblin());
-
-    draftableCards.push(dfc);
-
-    dfc = [];
-
-    dfc.push(new CardArmoredOgre());
-    dfc.push(new CardFireGoblin());
-    dfc.push(new CardCrocodile());
-    dfc.push(new CardCrocodile());
-    dfc.push(new CardCrocodile());
-
-    draftableCards.push(dfc);
+    for(let i = 0; i < 30; i++){
+        dfc = [];
+        for(let j = 0; j < 5; j++){
+            dfc.push(cardByInt(Math.floor(Math.random() * 5)));
+        }
+        draftableCards.push(dfc);
+    }
 
 
 }
 
+function cardByInt(n){
+    let card;
+
+    switch(n){
+        case 0: 
+            card = new CardGoblin();
+            break;
+        case 1:
+            card = new CardFireGoblin();
+            break;
+        case 2:
+            card = new CardArmoredOgre();
+            break;
+        case 3:
+            card = new CardCrocodile();
+            break;
+        case 4:
+            card = new CardFireBall();
+            break;
+        default:
+            card = new CardGoblin();
+    }
+
+    return card;
+}
 
 
 function castSelected() {
