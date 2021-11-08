@@ -499,11 +499,50 @@ function mouseClickedDraft(x, y){
 }
 
 function draftSelected(){
-    activePlayer.deck.push(draftableCards[draftTurn][selectedDraftableCardInt]);
-    //draftableCards.splice(selectedDraftableCardInt, 1);
-    selectedDraftableCardInt = -1;
-    draftTurn++;
+
+    if(selectedDraftableCardInt != -1){
+        activePlayer.deck.push(draftableCards[draftTurn][selectedDraftableCardInt]);
+        selectedDraftableCardInt = -1;
+        draftTurn++;
+    }
+
+    if(activePlayer.deck.length >= maxDeckSize){
+
+        if(passivePlayer.deck.length >= maxDeckSize){
+            turnStatus = 0;
+            shuffle(activePlayer.deck);
+            shuffle(passivePlayer.deck);
+            return;
+        }
+
+        let temp = activePlayer;
+        activePlayer = passivePlayer;
+        passivePlayer = temp;
+
+        draftTurn = 0;
+
+    }
+
+    
 }
+
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }
 
 function mouseClickedBetweenTurns(x, y) {
 
@@ -826,20 +865,22 @@ class Player {
         this.fullStones = 0;
 
         this.deck = [];
-        this.deck.push(new CardFireGoblin());
-        this.deck.push(new CardGoblin());
-        this.deck.push(new CardArmoredOgre());
-        this.deck.push(new CardFireGoblin());
-        this.deck.push(new CardGoblin());
-        this.deck.push(new CardArmoredOgre());
-        this.deck.push(new CardFireBall());
-        this.deck.push(new CardCrocodile());
+
+        // this.deck.push(new CardFireGoblin());
+        // this.deck.push(new CardGoblin());
+        // this.deck.push(new CardArmoredOgre());
+        // this.deck.push(new CardFireGoblin());
+        // this.deck.push(new CardGoblin());
+        // this.deck.push(new CardArmoredOgre());
+        // this.deck.push(new CardFireBall());
+        // this.deck.push(new CardCrocodile());
 
         this.discardDeck = [];
 
         this.creatures = [];
-        this.creatures.push(new CreatureGoblin());
-        this.creatures.push(new CreatureGoblin());
+
+        // this.creatures.push(new CreatureGoblin());
+        // this.creatures.push(new CreatureGoblin());
     }
 
     spawnCreature(c) {
