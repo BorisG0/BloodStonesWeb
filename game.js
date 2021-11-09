@@ -14,7 +14,7 @@ var canvas, ctx;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
-var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen
+var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen,      4 = between drafts
 
 var turnButtonSize = 150;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -219,13 +219,14 @@ function repaint() {
 
         ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
 
+        ctx.drawImage(activePlayer.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 + castingFieldSizeY, handCardSize, handCardSizeY);
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillStyle = 'white';
         ctx.font = '25px arial';
 
-        ctx.fillText(activePlayer.deck.length + "/" + maxDeckSize, canvas.width/2, canvas.height/4*3);
+        ctx.fillText(activePlayer.deck.length + "/" + maxDeckSize, canvas.width/2, canvas.height / 2 + castingFieldSizeY);
 
     }
 
