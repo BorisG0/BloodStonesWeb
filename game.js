@@ -543,7 +543,16 @@ function shuffle(array) {
     }
   
     return array;
-  }
+}
+
+
+function hasPassivePlayerTaunt(){
+    for(let i = 0; i < passivePlayer.creatures.length; i++){
+        if(passivePlayer.creatures[i].isTaunt) return true;
+    }
+
+    return false;
+}
 
 function mouseClickedBetweenTurns(x, y) {
 
@@ -595,9 +604,14 @@ function clickedPassiveCreatures(x, y) {
     }
 
     if (selectedActiveCreatureInt != -1) {
-        activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
+
+        if(!hasPassivePlayerTaunt() || passivePlayer.creatures[selectedPassiveCreatureIntTemp].isTaunt){
+            activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
         
-        selectedActiveCreatureInt = -1;
+            selectedActiveCreatureInt = -1;
+        }
+
+        
     }
 }
 
@@ -613,8 +627,11 @@ function clickedPassivePlayer(x, y) {
 
 
     if (selectedActiveCreatureInt != -1) {
-        activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
-        selectedActiveCreatureInt = -1;
+
+        if(!hasPassivePlayerTaunt()){
+            activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
+            selectedActiveCreatureInt = -1;
+        }
     }
 }
 
@@ -735,6 +752,7 @@ class Creature {
         this.attack = attack;
         this.defense = defense;
         this.isReady = false;
+        this.isTaunt = false;
     }
 
     attackCreature(attackedCreature) {
@@ -837,6 +855,7 @@ class CreatureFireGoblin extends Creature {
 class CreatureArmoredOgre extends Creature {
     constructor() {
         super("ArmoredOgre", document.getElementById("CreatureArmoredOgreImage"), 2, 5);
+        this.isTaunt = true;
     }
 }
 
