@@ -442,6 +442,10 @@ function drawCreature(creature, x, y, size) {
     ctx.fillText(creature.attack, x + size / 8, y + size * Math.sqrt(2), 100);
     ctx.fillText(creature.defense, x + size / 8 * 7, y + size * Math.sqrt(2), 100);
 
+    if(creature.isTaunt){
+        ctx.drawImage(document.getElementById("EffectTauntImage"), x, y, size, size * Math.sqrt(2));
+    }
+
 
     if (!creature.isReady) {
         ctx.drawImage(document.getElementById("NotReadyImage"), x, y, size, size * Math.sqrt(2));
