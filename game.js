@@ -478,7 +478,6 @@ function mouseClickedDraft(x, y){
         var selectedDraftableCardIntTemp 
         = Math.trunc((x - (canvas.width / 2 - draftableCards[draftTurn].length * (draftableCardSize + draftableCardGap) / 2)) / (draftableCardSize + draftableCardGap));
 
-        console.log(Math.sign(selectedDraftableCardIntTemp));
         if(selectedDraftableCardIntTemp == 'undefined') return;
 
 
