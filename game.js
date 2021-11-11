@@ -228,6 +228,8 @@ function repaint() {
 
         ctx.fillText(activePlayer.deck.length + "/" + maxDeckSize, canvas.width/2, canvas.height / 2 + castingFieldSizeY);
 
+        ctx.drawImage(document.getElementById("FillRandomImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+
     }
 
     if (turnStatus == 1) {//Midturn
@@ -499,6 +501,18 @@ function mouseClickedDraft(x, y){
     if ((y >= (canvas.height / 2 - castingFieldSizeY / 2)) && (y <= (canvas.height / 2 + castingFieldSizeY / 2)) //castingfield clicked
         && (x >= (canvas.width / 2 - castingFieldSize / 2)) && (x <= (canvas.width / 2 + castingFieldSize / 2))) {
             draftSelected();
+    }
+
+    if ((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //fillRandom clicked
+        && x > canvas.width - turnButtonSize) {
+        draftFillRandom();
+    }
+}
+
+function draftFillRandom(){
+    for(let i = activePlayer.deck.length; i < maxDeckSize; i++){
+        selectedDraftableCardInt = 0;
+        draftSelected();
     }
 }
 
