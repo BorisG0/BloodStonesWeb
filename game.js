@@ -89,8 +89,11 @@ function startGame() {
 
 function startDraft() {
     draftableCards = [];
+    fillDraftableCards();
 
+}
 
+function fillDraftableCards(){
     let dfc = []; //draftable Cards
 
     for(let i = 0; i < 30; i++){
@@ -100,8 +103,6 @@ function startDraft() {
         }
         draftableCards.push(dfc);
     }
-
-
 }
 
 function cardByInt(n){
@@ -198,7 +199,10 @@ function nextTurn() {
 
     activePlayer.drawCard();
     activePlayer.readyAllCreatures();
-    activePlayer.maxStones++;
+    if(activePlayer.maxStones < 12){
+        activePlayer.maxStones++;
+    }
+    
     activePlayer.fillStones();
 }
 
@@ -542,11 +546,15 @@ function draftSelected(){
     if(activePlayer.deck.length >= maxDeckSize){
 
         if(passivePlayer.deck.length >= maxDeckSize){
+
             turnStatus = 0;
             shuffle(activePlayer.deck);
             shuffle(passivePlayer.deck);
             return;
         }
+
+        draftableCards = [];
+        fillDraftableCards();
 
         let temp = activePlayer;
         activePlayer = passivePlayer;
