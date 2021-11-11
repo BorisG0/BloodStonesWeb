@@ -96,7 +96,7 @@ function startDraft() {
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 7)));
+            dfc.push(cardByInt(Math.floor(Math.random() * 9)));
         }
         draftableCards.push(dfc);
     }
@@ -128,6 +128,12 @@ function cardByInt(n){
             break;
         case 6:
             card = new CardUndeadKnight();
+            break;
+        case 7:
+            card = new CardBook();
+            break;
+        case 8:
+            card = new CardShield();
             break;
         default:
             card = new CardGoblin();
@@ -605,8 +611,14 @@ function clickedHandcards(x, y) {
 function clickedActiveCreatures(x, y) {
     var selectedActiveCreatureIntTemp = Math.trunc((x - (canvas.width / 2 - activePlayer.creatures.length * (creatureSize + creatureGap) / 2)) / (creatureSize + creatureGap));
 
-    console.log(selectedActiveCreatureIntTemp);
     if (!(selectedActiveCreatureIntTemp > activePlayer.creatures.length - 1)) {
+
+        if(isTargetingMode && isValidActiveCreatures){
+            currentTargetingSpell.play(activePlayer.creatures[selectedActiveCreatureIntTemp]);
+            return;
+        }
+
+
         if (selectedActiveCreatureInt == selectedActiveCreatureIntTemp) {
             selectedActiveCreatureInt = -1;
         } else {
@@ -838,6 +850,35 @@ class CardFireBall extends CardTargetingSpell {
 
     effect(target) {
         target.takeHit(3);
+    }
+}
+
+class CardShield extends CardTargetingSpell{
+    constructor(){
+        super("Shield", document.getElementById("CardShieldImage"), 1);
+        this.cardtext.push("Shield target");
+        this.cardtext.push("creature");
+
+        this.isTargetingPassiveCreatures = true;
+        this.isTargetingActiveCreatures = true;
+    }
+
+    effect(target){
+        target.isShielded = true;
+    }
+}
+
+
+class CardBook extends Card{
+    constructor(){
+        super("Book", document.getElementById("CardBookImage"), 5);
+        this.cardtext.push("Draw 3 Cards");
+    }
+
+    play(){
+        for(let i = 0; i < 3; i++){
+            activePlayer.drawCard();
+        }
     }
 }
 
