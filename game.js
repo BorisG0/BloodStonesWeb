@@ -96,7 +96,7 @@ function startDraft() {
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 5)));
+            dfc.push(cardByInt(Math.floor(Math.random() * 7)));
         }
         draftableCards.push(dfc);
     }
@@ -122,6 +122,12 @@ function cardByInt(n){
             break;
         case 4:
             card = new CardFireBall();
+            break;
+        case 5:
+            card = new CardShieldedKnight();
+            break;
+        case 6:
+            card = new CardUndeadKnight();
             break;
         default:
             card = new CardGoblin();
@@ -444,6 +450,9 @@ function drawCreature(creature, x, y, size) {
     ctx.fillText(creature.attack, x + size / 8, y + size * Math.sqrt(2), 100);
     ctx.fillText(creature.defense, x + size / 8 * 7, y + size * Math.sqrt(2), 100);
 
+    if(creature.isShielded){
+        ctx.drawImage(document.getElementById("EffectShieldedImage"), x, y, size, size * Math.sqrt(2));
+    }
     if(creature.isTaunt){
         ctx.drawImage(document.getElementById("EffectTauntImage"), x, y, size, size * Math.sqrt(2));
     }
@@ -766,16 +775,32 @@ class Creature {
     constructor(name, image, attack, defense) {
         this.name = name;
         this.image = image;
+
         this.attack = attack;
         this.defense = defense;
+        this.maxAttack = attack;
+        this.maxDefense = defense;
+
         this.isReady = false;
+
         this.isTaunt = false;
+        this.isShielded = false;
+        this.isUndead = false;
+        this.isFlying = false;
+        this.isBloodthirsty = false;
     }
 
     attackCreature(attackedCreature) {
         attackedCreature.takeHit(this.attack);
         this.takeHit(attackedCreature.attack);
         this.isReady = false;
+
+        //Bloodthirsty healing
+        if(this.isBloodthirsty && this.defense > 0){
+            if(attackedCreature.defense <= 0){
+                this.defense = this.maxDefense;
+            }
+        }
 
     }
 
@@ -784,8 +809,12 @@ class Creature {
         this.isReady = false;
     }
 
-    takeHit(hitDamage = 0) {
-        this.defense -= hitDamage;
+    takeHit(hitDamage) {
+        if(this.isShielded){
+            this.isShielded = false;
+        } else {
+            this.defense -= hitDamage;
+        }
     }
 
 }
@@ -800,7 +829,7 @@ class Creature {
 class CardFireBall extends CardTargetingSpell {
     constructor() {
         super("FireBall", document.getElementById("CardFireBallImage"), 2);
-        this.cardtext.push("Deals 3 Damage");
+        this.cardtext.push("Deal 3 Damage");
         this.cardtext.push("to target enemy");
 
         this.isTargetingPassiveCreatures = true;
@@ -817,7 +846,7 @@ class CardGoblin extends CardSpawnCreature {
     constructor() {
         super("CardGoblin", document.getElementById("CardGoblinImage"), 2);
         //this.cardtext = [];
-        this.cardtext.push("Spawns a");
+        this.cardtext.push("Spawn a");
         this.cardtext.push("1/2 Goblin");
         this.spawnCreatures.push(new CreatureGoblin());
     }
@@ -826,7 +855,7 @@ class CardGoblin extends CardSpawnCreature {
 class CardFireGoblin extends CardSpawnCreature {
     constructor() {
         super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2);
-        this.cardtext.push("Spawns a");
+        this.cardtext.push("Spawn a");
         this.cardtext.push("3/1 Firegoblin");
         this.spawnCreatures.push(new CreatureFireGoblin());
     }
@@ -835,19 +864,41 @@ class CardFireGoblin extends CardSpawnCreature {
 class CardArmoredOgre extends CardSpawnCreature {
     constructor() {
         super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 5);
-        this.cardtext.push("Spawns a");
+        this.cardtext.push("Spawn a");
         this.cardtext.push("2/5 Armored Ogre");
+        this.cardtext.push("with Taunt");
         this.spawnCreatures.push(new CreatureArmoredOgre());
     }
 }
+
 class CardCrocodile extends CardSpawnCreature {
     constructor(){
         super("CardCreature", document.getElementById("CardCrocodileImage"), 5);
-        this.cardtext.push("Spawns a");
+        this.cardtext.push("Spawn a");
         this.cardtext.push("4/4 Crocodile");
+        this.cardtext.push("with Bloodthirst");
         this.spawnCreatures.push(new CreatureCrocodile());
     }
 }
+
+class CardShieldedKnight extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardShieldedKnightImage"), 3);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("2/2 Shielded Knight");
+        this.spawnCreatures.push(new CreatureShieldedKnight());
+    }
+}
+
+class CardUndeadKnight extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardUndeadKnightImage"), 3);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("2/2 Undead Knight");
+        this.spawnCreatures.push(new CreatureUndeadKnight());
+    }
+}
+
 //----------------------------------------------------------------
 
 
@@ -879,6 +930,21 @@ class CreatureArmoredOgre extends Creature {
 class CreatureCrocodile extends Creature {
     constructor(){
         super("Crocodile", document.getElementById("CreatureCrocodileImage"), 4, 4);
+        this.isBloodthirsty = true;
+    }
+}
+
+class CreatureShieldedKnight extends Creature {
+    constructor(){
+        super("ShieldedKnight", document.getElementById("CreatureShieldedKnightImage"), 2, 2);
+        this.isShielded = true;
+    }
+}
+
+class CreatureUndeadKnight extends Creature {
+    constructor(){
+        super("UndeadKnight", document.getElementById("CreatureUndeadKnightImage"), 2, 2);
+        this.isUndead = true;
     }
 }
 //----------------------------------------------------------------
@@ -921,6 +987,7 @@ class Player {
     }
 
     spawnCreature(c) {
+        c.isReady = false;
         this.creatures.push(c);
     }
 
@@ -939,6 +1006,11 @@ class Player {
         //selectedHandCardInt = 1;
         for (let i = 0; i < this.creatures.length; i++) {
             if (this.creatures[i].defense <= 0) {
+                if(this.creatures[i].isUndead){ //Creature respawns upon death
+                    this.creatures[i].defense = 1;
+                    this.creatures[i].isUndead = false;
+                    this.spawnCreature(this.creatures[i]);
+                }
                 this.creatures.splice(i, 1);
             }
         }
