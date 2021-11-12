@@ -1,10 +1,58 @@
-var handCardSize = 150;
-var handCardSizeY = handCardSize * Math.sqrt(2);
-var handCardGap = 10;
+var sizeMultiplier = 1;
 
-var creatureSize = 110;
+var handCardSize = 150 * sizeMultiplier;
+var handCardSizeY = handCardSize * Math.sqrt(2);
+var handCardGap = 10 * sizeMultiplier;
+
+var creatureSize = 110 * sizeMultiplier;
 var creatureSizeY = creatureSize * Math.sqrt(2);
-var creatureGap = 5;
+var creatureGap = 5 * sizeMultiplier;
+
+var turnButtonSize = 150 * sizeMultiplier;
+var turnButtonSizeY = turnButtonSize / 2;
+
+var castingFieldSize = 200 * sizeMultiplier;
+var castingFieldSizeY = castingFieldSize * (3 / 4);
+
+var deckSize = 130 * sizeMultiplier;
+var deckSizeY = deckSize * Math.sqrt(2);
+var deckGap = 5 * sizeMultiplier;
+
+var draftableCardSize = 150 * sizeMultiplier;
+var draftableCardSizeY = draftableCardSize * Math.sqrt(2);
+var draftableCardGap = 15 * sizeMultiplier;
+
+var stoneSize = 60 * sizeMultiplier;
+
+function setSizes(){
+    sizeMultiplier = canvas.width/1920;
+
+    handCardSize = 150 * sizeMultiplier;
+    handCardSizeY = handCardSize * Math.sqrt(2);
+    handCardGap = 10 * sizeMultiplier;
+
+    creatureSize = 110 * sizeMultiplier;
+    creatureSizeY = creatureSize * Math.sqrt(2);
+    creatureGap = 5 * sizeMultiplier;
+
+    turnButtonSize = 150 * sizeMultiplier;
+    turnButtonSizeY = turnButtonSize / 2;
+
+    castingFieldSize = 200 * sizeMultiplier;
+    castingFieldSizeY = castingFieldSize * (3 / 4);
+
+    deckSize = 130 * sizeMultiplier;
+    deckSizeY = deckSize * Math.sqrt(2);
+    deckGap = 5 * sizeMultiplier;
+
+    draftableCardSize = 150 * sizeMultiplier;
+    draftableCardSizeY = draftableCardSize * Math.sqrt(2);
+    draftableCardGap = 15 * sizeMultiplier;
+
+    stoneSize = 60 * sizeMultiplier;
+}
+
+
 
 var player1, player2;
 var activePlayer, passivePlayer;
@@ -16,29 +64,15 @@ var selectedActiveCreatureInt = -1;
 
 var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen,      4 = between drafts
 
-var turnButtonSize = 150;
-var turnButtonSizeY = turnButtonSize / 2;
 
-var castingFieldSize = 200;
-var castingFieldSizeY = castingFieldSize * (3 / 4);
-
-var deckSize = 130;
-var deckSizeY = deckSize * Math.sqrt(2);
-var deckGap = 5;
-
-var stoneSize = 60;
 
 var draftableCards;
 
-var draftableCardSize = 150;
-var draftableCardSizeY = draftableCardSize * Math.sqrt(2);
-var draftableCardGap = 15;
 
 var selectedDraftableCardInt = -1;
 
 var draftTurn = 0;
 var maxDeckSize = 30;
-
 
 
 var winner, loser;
@@ -59,6 +93,8 @@ function startGame() {
 
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
+
+    setSizes();
 
 
     var imgLogo = document.getElementById("KidneyStoneLogoImage");
@@ -1159,13 +1195,15 @@ class CreatureGolem extends Creature {
     takeHit(hitDamage, gotAttacked) {
         super.takeHit(hitDamage, gotAttacked);
         if(this.defense <= 0){
+            let p;
             if(gotAttacked){
-                passivePlayer.hand.push(new CardGolemite());
-                passivePlayer.hand.push(new CardGolemite());
+                p = passivePlayer;
             } else {
-                activePlayer.hand.push(new CardGolemite());
-                activePlayer.hand.push(new CardGolemite());
+                p = activePlayer;
             }
+
+            p.hand.push(new CardGolemite());
+            p.hand.push(new CardGolemite());
         }
     }
 }
