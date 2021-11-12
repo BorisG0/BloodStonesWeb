@@ -151,7 +151,14 @@ function startDraft() {
 }
 
 function startGame(){
+    turnStatus = 0;
+    shuffle(activePlayer.deck);
+    shuffle(passivePlayer.deck);
 
+    for(let i = 0; i < 4; i++){
+        activePlayer.drawCard();
+        passivePlayer.drawCard();
+    }
 }
 
 function fillDraftableCards(){
@@ -636,9 +643,7 @@ function draftSelected(){
 
         if(passivePlayer.deck.length >= maxDeckSize){
 
-            turnStatus = 0;
-            shuffle(activePlayer.deck);
-            shuffle(passivePlayer.deck);
+            startGame();
             return;
         }
 
