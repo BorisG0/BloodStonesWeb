@@ -99,7 +99,7 @@ function fillDraftableCards(){
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 9)));
+            dfc.push(cardByInt(Math.floor(Math.random() * 15)));
         }
         draftableCards.push(dfc);
     }
@@ -136,6 +136,24 @@ function cardByInt(n){
         case 8:
             card = new CardShield();
             break;
+        case 9:
+            card = new CardBat();
+            break;
+        case 10:
+            card = new CardDragon();
+            break;
+        case 11:
+            card = new CardLegionnaire();
+            break;
+        case 12:
+            card = new CardGolem();
+            break;
+        case 13:
+            card = new CardGolemite();
+            break;
+        case 14:
+            card = new CardBloodStoneGolem();
+            break;
         default:
             card = new CardGoblin();
     }
@@ -147,7 +165,8 @@ function cardByInt(n){
 function castSelected() {
 
     if(isTargetingMode){
-        activePlayer.hand.push(currentTargetingSpell);
+        currentTargetingSpell.returnToHand();
+        
         isTargetingMode = false;
         activePlayer.fullStones += currentTargetingSpell.cost;
         return;
@@ -161,15 +180,7 @@ function castSelected() {
 
         if (activePlayer.hand[selectedHandCardInt] instanceof CardTargetingSpell) {
 
-            currentTargetingSpell = activePlayer.hand[selectedHandCardInt];
-
-            isTargetingMode = true;
-
-
-            isValidPassiveCreatures = currentTargetingSpell.isTargetingPassiveCreatures;
-            isValidActiveCreatures = currentTargetingSpell.isTargetingActiveCreatures;
-            isValidPassivePlayer = currentTargetingSpell.isTargetingPassivePlayer;
-            isValidActivePlayer = currentTargetingSpell.isTargetingActivePlayer;
+            enterSpellTargetingMode(activePlayer.hand[selectedHandCardInt]);
 
         } else {
             activePlayer.hand[selectedHandCardInt].play();
@@ -180,6 +191,18 @@ function castSelected() {
         activePlayer.hand.splice(selectedHandCardInt, 1);
         selectedHandCardInt = -1;
     }
+}
+
+
+function enterSpellTargetingMode(spell){
+    currentTargetingSpell = spell;
+
+    isTargetingMode = true;
+
+    isValidPassiveCreatures = currentTargetingSpell.isTargetingPassiveCreatures;
+    isValidActiveCreatures = currentTargetingSpell.isTargetingActiveCreatures;
+    isValidPassivePlayer = currentTargetingSpell.isTargetingPassivePlayer;
+    isValidActivePlayer = currentTargetingSpell.isTargetingActivePlayer;
 }
 
 
@@ -656,7 +679,10 @@ function clickedPassiveCreatures(x, y) {
 
     if (selectedActiveCreatureInt != -1) {
 
-        if(!hasPassivePlayerTaunt() || passivePlayer.creatures[selectedPassiveCreatureIntTemp].isTaunt){
+        if(
+            !activePlayer.creatures[selectedActiveCreatureInt].isFlying && ((!hasPassivePlayerTaunt() && !passivePlayer.creatures[selectedPassiveCreatureIntTemp].isFlying) || passivePlayer.creatures[selectedPassiveCreatureIntTemp].isTaunt) //Non-flying creatures can attack any creature with taunt and any non-flying creatures if the enemy does not have taunt
+            || activePlayer.creatures[selectedActiveCreatureInt].isFlying //Flying creatures can attack anything
+        ){
             activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
         
             selectedActiveCreatureInt = -1;
@@ -679,7 +705,7 @@ function clickedPassivePlayer(x, y) {
 
     if (selectedActiveCreatureInt != -1) {
 
-        if(!hasPassivePlayerTaunt()){
+        if(!hasPassivePlayerTaunt() || activePlayer.creatures[selectedActiveCreatureInt].isFlying){ //Enemy player can always be hit if he does not have a creature with taunt or if the attacking creature is flying
             activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
             selectedActiveCreatureInt = -1;
         }
@@ -790,6 +816,45 @@ class CardTargetingSpell extends Card {
 
     }
 
+    returnToHand(){
+        activePlayer.hand.push(this);
+    }
+
+}
+
+class CardSpawnCreatureAndTargetingSpell extends CardSpawnCreature{
+    constructor(name, image, cost, accompanyingSpell){
+        super(name, image, cost);
+        this.accompanyingSpell = accompanyingSpell;
+    }
+    play() {
+        super.play();
+        enterSpellTargetingMode(this.accompanyingSpell);
+    }
+    /*
+    play(target) {
+        this.spawnCreatures.forEach(c => activePlayer.spawnCreature(c));
+        this.effect(target);
+        isTargetingMode = false;
+        activePlayer.discardDeck.push(this);
+    }
+    */
+}
+
+class CardSpawnCreatureAccompanyingSpell extends CardTargetingSpell{
+    constructor(name, image, cost) {
+        super(name, image, cost);
+    }
+    play(target) {
+        this.effect(target);
+        isTargetingMode = false;
+    }
+    effect(target){
+
+    }
+    returnToHand(){
+
+    }
 }
 
 
@@ -816,8 +881,8 @@ class Creature {
     }
 
     attackCreature(attackedCreature) {
-        attackedCreature.takeHit(this.attack);
-        this.takeHit(attackedCreature.attack);
+        attackedCreature.takeHit(this.attack, true);
+        this.takeHit(attackedCreature.attack, false);
         this.isReady = false;
 
         //Bloodthirsty healing
@@ -830,11 +895,11 @@ class Creature {
     }
 
     attackPlayer(attackedPlayer) {
-        attackedPlayer.takeHit(this.attack);
+        attackedPlayer.takeHit(this.attack, true);
         this.isReady = false;
     }
 
-    takeHit(hitDamage) {
+    takeHit(hitDamage, gotAttacked) {
         if(this.isShielded){
             this.isShielded = false;
         } else {
@@ -855,14 +920,14 @@ class CardFireBall extends CardTargetingSpell {
     constructor() {
         super("FireBall", document.getElementById("CardFireBallImage"), 2);
         this.cardtext.push("Deal 3 Damage");
-        this.cardtext.push("to target enemy");
+        this.cardtext.push("to target enemy.");
 
         this.isTargetingPassiveCreatures = true;
         this.isTargetingPassivePlayer = true;
     }
 
     effect(target) {
-        target.takeHit(3);
+        target.takeHit(3, true);
     }
 }
 
@@ -870,7 +935,7 @@ class CardShield extends CardTargetingSpell{
     constructor(){
         super("Shield", document.getElementById("CardShieldImage"), 1);
         this.cardtext.push("Shield target");
-        this.cardtext.push("creature");
+        this.cardtext.push("creature.");
 
         this.isTargetingPassiveCreatures = true;
         this.isTargetingActiveCreatures = true;
@@ -885,7 +950,7 @@ class CardShield extends CardTargetingSpell{
 class CardBook extends Card{
     constructor(){
         super("Book", document.getElementById("CardBookImage"), 5);
-        this.cardtext.push("Draw 3 Cards");
+        this.cardtext.push("Draw 3 Cards.");
     }
 
     play(){
@@ -901,7 +966,7 @@ class CardGoblin extends CardSpawnCreature {
         super("CardGoblin", document.getElementById("CardGoblinImage"), 2);
         //this.cardtext = [];
         this.cardtext.push("Spawn a");
-        this.cardtext.push("1/2 Goblin");
+        this.cardtext.push("1/2 Goblin.");
         this.spawnCreatures.push(new CreatureGoblin());
     }
 }
@@ -910,7 +975,7 @@ class CardFireGoblin extends CardSpawnCreature {
     constructor() {
         super("CardFireGoblin", document.getElementById("CardFireGoblinImage"), 2);
         this.cardtext.push("Spawn a");
-        this.cardtext.push("3/1 Firegoblin");
+        this.cardtext.push("3/1 Firegoblin.");
         this.spawnCreatures.push(new CreatureFireGoblin());
     }
 }
@@ -920,7 +985,7 @@ class CardArmoredOgre extends CardSpawnCreature {
         super("CardArmoredOgre", document.getElementById("CardArmoredOgreImage"), 5);
         this.cardtext.push("Spawn a");
         this.cardtext.push("2/5 Armored Ogre");
-        this.cardtext.push("with Taunt");
+        this.cardtext.push("with Taunt.");
         this.spawnCreatures.push(new CreatureArmoredOgre());
     }
 }
@@ -930,7 +995,7 @@ class CardCrocodile extends CardSpawnCreature {
         super("CardCreature", document.getElementById("CardCrocodileImage"), 5);
         this.cardtext.push("Spawn a");
         this.cardtext.push("4/4 Crocodile");
-        this.cardtext.push("with Bloodthirst");
+        this.cardtext.push("with Bloodthirst.");
         this.spawnCreatures.push(new CreatureCrocodile());
     }
 }
@@ -939,7 +1004,7 @@ class CardShieldedKnight extends CardSpawnCreature {
     constructor(){
         super("CardCreature", document.getElementById("CardShieldedKnightImage"), 3);
         this.cardtext.push("Spawn a");
-        this.cardtext.push("2/2 Shielded Knight");
+        this.cardtext.push("2/2 Shielded Knight.");
         this.spawnCreatures.push(new CreatureShieldedKnight());
     }
 }
@@ -948,8 +1013,77 @@ class CardUndeadKnight extends CardSpawnCreature {
     constructor(){
         super("CardCreature", document.getElementById("CardUndeadKnightImage"), 3);
         this.cardtext.push("Spawn a");
-        this.cardtext.push("2/2 Undead Knight");
+        this.cardtext.push("2/2 Undead Knight.");
         this.spawnCreatures.push(new CreatureUndeadKnight());
+    }
+}
+
+class CardBat extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardBatImage"), 4);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("1/1 flying Bat.");
+        this.spawnCreatures.push(new CreatureBat());
+    }
+}
+class CardDragon extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardDragonImage"), 12);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("12/12 Dragon.");
+        this.spawnCreatures.push(new CreatureDragon());
+    }
+}
+class CardLegionnaire extends CardSpawnCreatureAndTargetingSpell{
+    constructor(){
+        super("Legionnaire", document.getElementById("CardLegionnaireImage"), 3, new CardLegionnaireAccompanyingSpell());
+        this.cardtext.push("Spawn a 2/3 Legionnaire.");
+        this.cardtext.push("Give another creature");
+        this.cardtext.push("Taunt.");
+        this.spawnCreatures.push(new CreatureLegionnaire());
+    }
+
+    effect(target){
+        target.isTaunt = true;
+    }
+}
+class CardLegionnaireAccompanyingSpell extends CardSpawnCreatureAccompanyingSpell{
+    constructor(){
+        super("LegionnaireTaunt", document.getElementById("CardLegionnaireImage"), 0);
+
+        this.isTargetingPassiveCreatures = true;
+        this.isTargetingActiveCreatures = true;
+    }
+
+    effect(target){
+        target.isTaunt = true;
+    }
+}
+class CardGolem extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardGolemImage"), 8);
+        this.cardtext.push("Spawn a 6/7 Golem.");
+        this.cardtext.push("When it dies, add 2");
+        this.cardtext.push("Golemites to your hand.");
+        this.spawnCreatures.push(new CreatureGolem());
+    }
+}
+class CardGolemite extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardGolemiteImage"), 4);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("3/3 Golemite.");
+        this.spawnCreatures.push(new CreatureGolemite());
+    }
+}
+class CardBloodStoneGolem extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardBloodStoneGolemImage"), 8);
+        this.cardtext.push("Spawn a 7/6 Golem.");
+        this.cardtext.push("Whenever it attacks and");
+        this.cardtext.push("kills a creature, add a");
+        this.cardtext.push("Golemite to your hand.")
+        this.spawnCreatures.push(new CreatureBloodStoneGolem());
     }
 }
 
@@ -999,6 +1133,56 @@ class CreatureUndeadKnight extends Creature {
     constructor(){
         super("UndeadKnight", document.getElementById("CreatureUndeadKnightImage"), 2, 2);
         this.isUndead = true;
+    }
+}
+class CreatureBat extends Creature {
+    constructor(){
+        super("Bat", document.getElementById("CreatureBatImage"), 1, 1);
+        this.isFlying = true;
+    }
+}
+class CreatureDragon extends Creature {
+    constructor(){
+        super("Dragon", document.getElementById("CreatureDragonImage"), 12, 12);
+        this.isFlying = true;
+    }
+}
+class CreatureLegionnaire extends Creature {
+    constructor(){
+        super("Legionnaire", document.getElementById("CreatureLegionnaireImage"), 2, 3);
+    }
+}
+class CreatureGolem extends Creature {
+    constructor(){
+        super("Golem", document.getElementById("CreatureGolemImage"), 6, 7);
+    }
+    takeHit(hitDamage, gotAttacked) {
+        super.takeHit(hitDamage, gotAttacked);
+        if(this.defense <= 0){
+            if(gotAttacked){
+                passivePlayer.hand.push(new CardGolemite());
+                passivePlayer.hand.push(new CardGolemite());
+            } else {
+                activePlayer.hand.push(new CardGolemite());
+                activePlayer.hand.push(new CardGolemite());
+            }
+        }
+    }
+}
+class CreatureGolemite extends Creature {
+    constructor(){
+        super("Golemite", document.getElementById("CreatureGolemiteImage"), 3, 3);
+    }
+}
+class CreatureBloodStoneGolem extends Creature {
+    constructor(){
+        super("BloodStoneGolem", document.getElementById("CreatureBloodStoneGolemImage"), 7, 6);
+    }
+    attackCreature(attackedCreature) {
+        super.attackCreature(attackedCreature);
+        if(attackedCreature.defense <= 0){
+            activePlayer.hand.push(new CardGolemite());
+        }
     }
 }
 //----------------------------------------------------------------
@@ -1076,7 +1260,7 @@ class Player {
         }
     }
 
-    takeHit(damage) {
+    takeHit(damage, gotAttacked) {
         this.health -= damage;
         checkWin();
     }
