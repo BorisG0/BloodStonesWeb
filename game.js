@@ -99,7 +99,7 @@ function fillDraftableCards(){
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 11)));
+            dfc.push(cardByInt(Math.floor(Math.random() * 12)));
         }
         draftableCards.push(dfc);
     }
@@ -142,6 +142,9 @@ function cardByInt(n){
         case 10:
             card = new CardDragon();
             break;
+        case 11:
+            card = new CardLegionnaire();
+            break;
         default:
             card = new CardGoblin();
     }
@@ -153,7 +156,8 @@ function cardByInt(n){
 function castSelected() {
 
     if(isTargetingMode){
-        activePlayer.hand.push(currentTargetingSpell);
+        currentTargetingSpell.returnToHand();
+        
         isTargetingMode = false;
         activePlayer.fullStones += currentTargetingSpell.cost;
         return;
@@ -167,15 +171,7 @@ function castSelected() {
 
         if (activePlayer.hand[selectedHandCardInt] instanceof CardTargetingSpell) {
 
-            currentTargetingSpell = activePlayer.hand[selectedHandCardInt];
-
-            isTargetingMode = true;
-
-
-            isValidPassiveCreatures = currentTargetingSpell.isTargetingPassiveCreatures;
-            isValidActiveCreatures = currentTargetingSpell.isTargetingActiveCreatures;
-            isValidPassivePlayer = currentTargetingSpell.isTargetingPassivePlayer;
-            isValidActivePlayer = currentTargetingSpell.isTargetingActivePlayer;
+            enterSpellTargetingMode(activePlayer.hand[selectedHandCardInt]);
 
         } else {
             activePlayer.hand[selectedHandCardInt].play();
@@ -186,6 +182,18 @@ function castSelected() {
         activePlayer.hand.splice(selectedHandCardInt, 1);
         selectedHandCardInt = -1;
     }
+}
+
+
+function enterSpellTargetingMode(spell){
+    currentTargetingSpell = spell;
+
+    isTargetingMode = true;
+
+    isValidPassiveCreatures = currentTargetingSpell.isTargetingPassiveCreatures;
+    isValidActiveCreatures = currentTargetingSpell.isTargetingActiveCreatures;
+    isValidPassivePlayer = currentTargetingSpell.isTargetingPassivePlayer;
+    isValidActivePlayer = currentTargetingSpell.isTargetingActivePlayer;
 }
 
 
@@ -794,6 +802,45 @@ class CardTargetingSpell extends Card {
 
     }
 
+    returnToHand(){
+        activePlayer.hand.push(this);
+    }
+
+}
+
+class CardSpawnCreatureAndTargetingSpell extends CardSpawnCreature{
+    constructor(name, image, cost, accompanyingSpell){
+        super(name, image, cost);
+        this.accompanyingSpell = accompanyingSpell;
+    }
+    play() {
+        super.play();
+        enterSpellTargetingMode(this.accompanyingSpell);
+    }
+    /*
+    play(target) {
+        this.spawnCreatures.forEach(c => activePlayer.spawnCreature(c));
+        this.effect(target);
+        isTargetingMode = false;
+        activePlayer.discardDeck.push(this);
+    }
+    */
+}
+
+class CardSpawnCreatureAccompanyingSpell extends CardTargetingSpell{
+    constructor(name, image, cost) {
+        super(name, image, cost);
+    }
+    play(target) {
+        this.effect(target);
+        isTargetingMode = false;
+    }
+    effect(target){
+
+    }
+    returnToHand(){
+
+    }
 }
 
 
@@ -973,6 +1020,35 @@ class CardDragon extends CardSpawnCreature {
         this.spawnCreatures.push(new CreatureDragon());
     }
 }
+class CardLegionnaire extends CardSpawnCreatureAndTargetingSpell{
+    constructor(){
+        super("Legionnaire", document.getElementById("CardLegionnaireImage"), 3, new CardLegionnaireAccompanyingSpell());
+        this.cardtext.push("Spawn a 2/3 Legionnaire");
+        this.cardtext.push("Give another creature");
+        this.cardtext.push("Taunt");
+        this.spawnCreatures.push(new CreatureLegionnaire());
+        /*
+        this.isTargetingPassiveCreatures = true;
+        this.isTargetingActiveCreatures = true;
+        */
+    }
+
+    effect(target){
+        target.isTaunt = true;
+    }
+}
+class CardLegionnaireAccompanyingSpell extends CardSpawnCreatureAccompanyingSpell{
+    constructor(){
+        super("LegionnaireTaunt", document.getElementById("CardLegionnaireImage"), 0);
+
+        this.isTargetingPassiveCreatures = true;
+        this.isTargetingActiveCreatures = true;
+    }
+
+    effect(target){
+        target.isTaunt = true;
+    }
+}
 
 //----------------------------------------------------------------
 
@@ -1032,6 +1108,11 @@ class CreatureDragon extends Creature {
     constructor(){
         super("Dragon", document.getElementById("CreatureDragonImage"), 12, 12);
         this.isFlying = true;
+    }
+}
+class CreatureLegionnaire extends Creature {
+    constructor(){
+        super("Legionnaire", document.getElementById("CreatureLegionnaireImage"), 2, 3);
     }
 }
 //----------------------------------------------------------------
