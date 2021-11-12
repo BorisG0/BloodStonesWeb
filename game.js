@@ -99,7 +99,7 @@ function fillDraftableCards(){
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 9)));
+            dfc.push(cardByInt(Math.floor(Math.random() * 11)));
         }
         draftableCards.push(dfc);
     }
@@ -135,6 +135,12 @@ function cardByInt(n){
             break;
         case 8:
             card = new CardShield();
+            break;
+        case 9:
+            card = new CardBat();
+            break;
+        case 10:
+            card = new CardDragon();
             break;
         default:
             card = new CardGoblin();
@@ -651,7 +657,10 @@ function clickedPassiveCreatures(x, y) {
 
     if (selectedActiveCreatureInt != -1) {
 
-        if(!hasPassivePlayerTaunt() || passivePlayer.creatures[selectedPassiveCreatureIntTemp].isTaunt){
+        if(
+            !activePlayer.creatures[selectedActiveCreatureInt].isFlying && ((!hasPassivePlayerTaunt() && !passivePlayer.creatures[selectedPassiveCreatureIntTemp].isFlying) || passivePlayer.creatures[selectedPassiveCreatureIntTemp].isTaunt) //Non-flying creatures can attack any creature with taunt and any non-flying creatures if the enemy does not have taunt
+            || activePlayer.creatures[selectedActiveCreatureInt].isFlying //Flying creatures can attack anything
+        ){
             activePlayer.creatures[selectedActiveCreatureInt].attackCreature(passivePlayer.creatures[selectedPassiveCreatureIntTemp]);
         
             selectedActiveCreatureInt = -1;
@@ -674,7 +683,7 @@ function clickedPassivePlayer(x, y) {
 
     if (selectedActiveCreatureInt != -1) {
 
-        if(!hasPassivePlayerTaunt()){
+        if(!hasPassivePlayerTaunt() || activePlayer.creatures[selectedActiveCreatureInt].isFlying){ //Enemy player can always be hit if he does not have a creature with taunt or if the attacking creature is flying
             activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
             selectedActiveCreatureInt = -1;
         }
@@ -948,6 +957,23 @@ class CardUndeadKnight extends CardSpawnCreature {
     }
 }
 
+class CardBat extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardBatImage"), 4);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("1/1 flying Bat");
+        this.spawnCreatures.push(new CreatureBat());
+    }
+}
+class CardDragon extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardDragonImage"), 12);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("12/12 Dragon");
+        this.spawnCreatures.push(new CreatureDragon());
+    }
+}
+
 //----------------------------------------------------------------
 
 
@@ -994,6 +1020,18 @@ class CreatureUndeadKnight extends Creature {
     constructor(){
         super("UndeadKnight", document.getElementById("CreatureUndeadKnightImage"), 2, 2);
         this.isUndead = true;
+    }
+}
+class CreatureBat extends Creature {
+    constructor(){
+        super("Bat", document.getElementById("CreatureBatImage"), 1, 1);
+        this.isFlying = true;
+    }
+}
+class CreatureDragon extends Creature {
+    constructor(){
+        super("Dragon", document.getElementById("CreatureDragonImage"), 12, 12);
+        this.isFlying = true;
     }
 }
 //----------------------------------------------------------------
