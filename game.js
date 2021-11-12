@@ -1,3 +1,5 @@
+//----------------------------------------------------------------------------------------------
+//size settings
 var sizeMultiplier = 1;
 
 var gameFont = 'arial';
@@ -65,43 +67,48 @@ function setSizes(){
 
     stoneSize = 60 * sizeMultiplier;
 }
+//----------------------------------------------------------------------------------------------
 
 
+var canvas, ctx;
 
 var player1, player2;
 var activePlayer, passivePlayer;
-
-var canvas, ctx;
 
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
 var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen,      4 = between drafts
 
+var winner, loser;
 
 
+
+//----------------------------------------------------------------------------------------------
+//draft
 var draftableCards;
-
 
 var selectedDraftableCardInt = -1;
 
 var draftTurn = 0;
 var maxDeckSize = 30;
+//----------------------------------------------------------------------------------------------
 
 
-var winner, loser;
 
-
+//----------------------------------------------------------------------------------------------
+//Targeting for spells
 var isTargetingMode = false;
+
 var isValidPassiveCreatures = false;
 var isValidActiveCreatures = false;
 var isValidPassivePlayer = false;
 var isValidActivePlayer = false;
 var currentTargetingSpell;
+//----------------------------------------------------------------------------------------------
 
 
-
-function startGame() {
+function start() {
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
 
@@ -140,6 +147,10 @@ function startGame() {
 function startDraft() {
     draftableCards = [];
     fillDraftableCards();
+
+}
+
+function startGame(){
 
 }
 
