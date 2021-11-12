@@ -375,6 +375,8 @@ function repaint() {
         //Draw passiveplayer with decks
         ctx.drawImage(passivePlayer.image, deckGap + deckSize / 2, deckGap * 2 + deckSizeY, deckSize, deckSizeY);
 
+        
+
         ctx.font = creatureFont;
 
         ctx.fillText(passivePlayer.health, deckGap + deckSize, deckGap * 2 + deckSizeY + deckSizeY / 32 * 29);
@@ -398,6 +400,10 @@ function repaint() {
 
 
         ctx.fillText(passivePlayer.discardDeck.length, deckGap + deckSize / 2 * 3, deckSizeY + deckGap + 35);
+
+        if((isTargetingMode && isValidPassivePlayer) || (selectedActiveCreatureInt != -1 && !hasPassivePlayerTaunt())){
+            ctx.drawImage(document.getElementById('SelectableImage'), deckGap + deckSize / 2, deckGap * 2 + deckSizeY, deckSize, deckSizeY);
+        }
 
 
 
@@ -517,6 +523,11 @@ function drawActiveCreatures(creatures) {
     for (let i = 0; i < creatures.length; i++) {
         drawCreature(creatures[i], (canvas.width / 2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
             canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize);
+
+        if(isTargetingMode && isValidActiveCreatures){
+            ctx.drawImage(document.getElementById('SelectableImage'), (canvas.width / 2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+            canvas.height - handCardSizeY - handCardGap - creatureSizeY - creatureGap, creatureSize, creatureSizeY);
+        }
     }
 }
 
@@ -525,6 +536,11 @@ function drawPassiveCreatures(creatures) {
     for (let i = 0; i < creatures.length; i++) {
         drawCreature(creatures[i], (canvas.width / 2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
             handCardSizeY + handCardGap + creatureGap, creatureSize);
+
+        if((isTargetingMode && isValidPassiveCreatures) || (selectedActiveCreatureInt != -1 && (!hasPassivePlayerTaunt() || creatures[i].isTaunt))){
+            ctx.drawImage(document.getElementById('SelectableImage'), (canvas.width / 2) - (creatures.length * (creatureSize + creatureGap) / 2) + i * (creatureSize + creatureGap),
+            handCardSizeY + handCardGap + creatureGap, creatureSize, creatureSizeY)
+        }
     }
 }
 
@@ -698,6 +714,9 @@ function mouseClickedBetweenTurns(x, y) {
 }
 
 function clickedHandcards(x, y) {
+
+    if(isTargetingMode) return;
+
     var selectedHandCardIntTemp = Math.trunc((x - (canvas.width / 2 - activePlayer.hand.length * (handCardSize + handCardGap) / 2)) / (handCardSize + handCardGap));
 
     if (!(selectedHandCardIntTemp > activePlayer.hand.length - 1)) {
@@ -719,6 +738,8 @@ function clickedActiveCreatures(x, y) {
             currentTargetingSpell.play(activePlayer.creatures[selectedActiveCreatureIntTemp]);
             return;
         }
+
+        if(isTargetingMode) return;
 
 
         if (selectedActiveCreatureInt == selectedActiveCreatureIntTemp) {
