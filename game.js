@@ -167,7 +167,7 @@ function fillDraftableCards(){
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 15)));
+            dfc.push(cardByInt(Math.floor(Math.random() * 16)));
         }
         draftableCards.push(dfc);
     }
@@ -221,6 +221,9 @@ function cardByInt(n){
             break;
         case 14:
             card = new CardBloodStoneGolem();
+            break;
+        case 15:
+            card = new CardBloodSacrifice();
             break;
         default:
             card = new CardGoblin();
@@ -1044,6 +1047,19 @@ class CardBook extends Card{
         for(let i = 0; i < 3; i++){
             activePlayer.drawCard();
         }
+    }
+}
+
+class CardBloodSacrifice extends Card{
+    constructor(){
+        super("BloodSacrifice", document.getElementById("CardBloodSacrificeImage"), 0);
+        this.cardtext.push("Fill your Bloodstones");
+        this.cardtext.push("and take 3 Damage.");
+    }
+
+    play(){
+        activePlayer.takeHit(3);
+        activePlayer.fillStones();
     }
 }
 
