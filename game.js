@@ -402,7 +402,7 @@ function repaint() {
         ctx.fillText(passivePlayer.discardDeck.length, deckGap + deckSize / 2 * 3, deckSizeY + deckGap + 35);
 
         if((isTargetingMode && isValidPassivePlayer) || (selectedActiveCreatureInt != -1 && !hasPassivePlayerTaunt())){
-            ctx.drawImage(document.getElementById('SelectableImage'), deckGap + deckSize / 2, deckGap * 2 + deckSizeY, deckSize, deckSizeY);
+            ctx.drawImage(document.getElementById('SelectablePlayerImage'), deckGap + deckSize / 2, deckGap * 2 + deckSizeY, deckSize, deckSizeY);
         }
 
 
