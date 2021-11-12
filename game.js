@@ -339,6 +339,11 @@ function repaint() {
         ctx.drawImage(document.getElementById("NextTurnImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
     }
 
+    if (turnStatus == 4){//between drafts
+        ctx.drawImage(passivePlayer.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2, handCardSize, handCardSizeY);
+
+    }
+
     if (turnStatus == 3) { //Winning screen
         ctx.drawImage(winner.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2, handCardSize, handCardSizeY);
 
