@@ -1,12 +1,20 @@
 var sizeMultiplier = 1;
 
+var gameFont = 'arial';
+
 var handCardSize = 150 * sizeMultiplier;
 var handCardSizeY = handCardSize * Math.sqrt(2);
 var handCardGap = 10 * sizeMultiplier;
+var handCardFontSize = 13;
+var handCardFont = '13px arial';
+var handCardCostFontSize = 30;
+var handCardCostFont = '30px arial';
 
 var creatureSize = 110 * sizeMultiplier;
 var creatureSizeY = creatureSize * Math.sqrt(2);
 var creatureGap = 5 * sizeMultiplier;
+var creatureFontSize = 25;
+var creatureFont = '25px arial';
 
 var turnButtonSize = 150 * sizeMultiplier;
 var turnButtonSizeY = turnButtonSize / 2;
@@ -30,10 +38,16 @@ function setSizes(){
     handCardSize = 150 * sizeMultiplier;
     handCardSizeY = handCardSize * Math.sqrt(2);
     handCardGap = 10 * sizeMultiplier;
+    handCardFontSize = 13 * sizeMultiplier;
+    handCardFont = handCardFontSize + 'px ' + gameFont;
+    handCardCostFontSize = 30 * sizeMultiplier;
+    handCardCostFont = handCardCostFontSize + 'px ' + gameFont;
 
     creatureSize = 110 * sizeMultiplier;
     creatureSizeY = creatureSize * Math.sqrt(2);
     creatureGap = 5 * sizeMultiplier;
+    creatureFontSize = 25 * sizeMultiplier;
+    creatureFont = creatureFontSize + 'px ' + gameFont;
 
     turnButtonSize = 150 * sizeMultiplier;
     turnButtonSizeY = turnButtonSize / 2;
@@ -45,8 +59,8 @@ function setSizes(){
     deckSizeY = deckSize * Math.sqrt(2);
     deckGap = 5 * sizeMultiplier;
 
-    draftableCardSize = 150 * sizeMultiplier;
-    draftableCardSizeY = draftableCardSize * Math.sqrt(2);
+    draftableCardSize = handCardSize;
+    draftableCardSizeY = handCardSizeY;
     draftableCardGap = 15 * sizeMultiplier;
 
     stoneSize = 60 * sizeMultiplier;
@@ -315,7 +329,7 @@ function repaint() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillStyle = 'white';
-        ctx.font = '25px arial';
+        ctx.font = creatureFont;
 
         ctx.fillText(activePlayer.health, deckGap + deckSize, canvas.height - deckSizeY * 2 - deckGap * 2 + deckSizeY / 32 * 29);
 
@@ -326,7 +340,7 @@ function repaint() {
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, canvas.height - deckSizeY - deckGap, deckSize, deckSizeY);
         }
 
-        ctx.font = '30px arial';
+        ctx.font = handCardCostFont;
         ctx.fillText(activePlayer.deck.length, deckGap + deckSize / 2, canvas.height - deckSizeY - deckGap);
 
 
@@ -343,7 +357,7 @@ function repaint() {
         //Draw passiveplayer with decks
         ctx.drawImage(passivePlayer.image, deckGap + deckSize / 2, deckGap * 2 + deckSizeY, deckSize, deckSizeY);
 
-        ctx.font = '25px arial';
+        ctx.font = creatureFont;
 
         ctx.fillText(passivePlayer.health, deckGap + deckSize, deckGap * 2 + deckSizeY + deckSizeY / 32 * 29);
 
@@ -353,7 +367,7 @@ function repaint() {
             ctx.drawImage(document.getElementById("EmptyPlaceImage"), deckGap, deckGap, deckSize, deckSizeY);
         }
 
-        ctx.font = '30px arial';
+        ctx.font = handCardCostFont;
         ctx.fillText(passivePlayer.deck.length, deckGap + deckSize / 2, deckSizeY + deckGap + 35);
 
 
@@ -499,16 +513,16 @@ function drawPassiveCreatures(creatures) {
 function drawCard(card, x, y, size) {
     ctx.drawImage(card.image, x, y, size, size * Math.sqrt(2));
 
-    ctx.font = '13px arial';
+    ctx.font = handCardFont;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = 'white';
 
     for (let i = 0; i < card.cardtext.length; i++) {
-        ctx.fillText(card.cardtext[i], x + size / 2, y + size / 16 * (10 + i * 1.5) * Math.sqrt(2));
+        ctx.fillText(card.cardtext[i], x + size / 2, y + size / 16 * (9 + i * 1.5) * Math.sqrt(2));
     }
 
-    ctx.font = '30px arial';
+    ctx.font = handCardCostFont;
 
     ctx.fillText(card.cost, x + size * 27 / 32, y + size * Math.sqrt(2) * 31 / 32);
 }
@@ -517,7 +531,7 @@ function drawCreature(creature, x, y, size) {
     ctx.drawImage(creature.image, x, y, size, size * Math.sqrt(2));
 
 
-    ctx.font = '25px arial';
+    ctx.font = creatureFont;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = 'white';
