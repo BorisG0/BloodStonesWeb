@@ -78,7 +78,7 @@ var activePlayer, passivePlayer;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
-var turnStatus = 2; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen,      4 = between drafts
+var turnStatus = 4; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen,      4 = between drafts
 
 var winner, loser;
 
@@ -440,7 +440,9 @@ function repaint() {
     }
 
     if (turnStatus == 4){//between drafts
-        ctx.drawImage(passivePlayer.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2, handCardSize, handCardSizeY);
+        ctx.drawImage(activePlayer.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2, handCardSize, handCardSizeY);
+
+        ctx.drawImage(document.getElementById("NextDraftImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
 
     }
 
@@ -598,6 +600,8 @@ function mouseClicked(event) {
         mouseClickedMidTurn(x, y);
     } else if (turnStatus == 2){
         mouseClickedDraft(x, y);
+    } else if (turnStatus == 4){
+        mouseClickedBetweenDraft(x, y);
     }
 
 
@@ -643,6 +647,20 @@ function mouseClickedDraft(x, y){
     }
 }
 
+
+function mouseClickedBetweenDraft(x, y){
+    if ((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //nextDraft clicked
+        && x > canvas.width - turnButtonSize) {
+        nextDraft();
+    }
+}
+
+function nextDraft(){
+    startDraft();
+    turnStatus = 2;
+    
+}
+
 function draftFillRandom(){
     for(let i = activePlayer.deck.length; i < maxDeckSize; i++){
         selectedDraftableCardInt = 0;
@@ -674,6 +692,8 @@ function draftSelected(){
         passivePlayer = temp;
 
         draftTurn = 0;
+
+        turnStatus = 4;
 
     }
 
@@ -1054,11 +1074,11 @@ class CardBloodSacrifice extends Card{
     constructor(){
         super("BloodSacrifice", document.getElementById("CardBloodSacrificeImage"), 0);
         this.cardtext.push("Fill your Bloodstones");
-        this.cardtext.push("and take 3 Damage.");
+        this.cardtext.push("and take 6 Damage.");
     }
 
     play(){
-        activePlayer.takeHit(3);
+        activePlayer.takeHit(6);
         activePlayer.fillStones();
     }
 }
