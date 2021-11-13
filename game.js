@@ -198,7 +198,7 @@ function getRarityOfCards(){
 
     let common = [];
     common.push(0);
-    common.push(0);
+    common.push(1);
     common.push(2);
     common.push(4);
     common.push(9);
