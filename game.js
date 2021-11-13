@@ -163,15 +163,68 @@ function startGame(){
 }
 
 function fillDraftableCards(){
+
+    let allIndex = getRarityOfCards();
+
+    let commonIndex = allIndex[0];
+    let rareIndex = allIndex[1];
+    let legendaryIndex = allIndex[2];
+
     let dfc = []; //draftable Cards
+    let card;
 
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 17)));
+
+            if((i + 1) % 10 == 0){
+                card = cardByInt(legendaryIndex[Math.floor(Math.random() * legendaryIndex.length)]);
+            }else if((i + 1) % 3 == 0){
+                card = cardByInt(rareIndex[Math.floor(Math.random() * rareIndex.length)]);
+            }else{
+                card = cardByInt(commonIndex[Math.floor(Math.random() * commonIndex.length)]);
+            }
+            
+
+
+            dfc.push(card);
         }
         draftableCards.push(dfc);
     }
+}
+
+function getRarityOfCards(){
+    let allRarityIndexes = []; // 0 = common, 1 = rare, 2 = legendary
+
+    let common = [];
+    common.push(0);
+    common.push(0);
+    common.push(2);
+    common.push(4);
+    common.push(9);
+    common.push(13);
+
+    let rare = [];
+    rare.push(3);
+    rare.push(5);
+    rare.push(6);
+    rare.push(7);
+    rare.push(8);
+    rare.push(11);
+    rare.push(12);
+    rare.push(15);
+
+    let legendary = [];
+    legendary.push(10);
+    legendary.push(14);
+    legendary.push(16);
+
+
+    allRarityIndexes.push(common);
+    allRarityIndexes.push(rare);
+    allRarityIndexes.push(legendary);
+
+    return allRarityIndexes;
 }
 
 function cardByInt(n){
@@ -179,55 +232,55 @@ function cardByInt(n){
 
     switch(n){
         case 0: 
-            card = new CardGoblin();
+            card = new CardGoblin(); // common
             break;
         case 1:
-            card = new CardFireGoblin();
+            card = new CardFireGoblin(); // common
             break;
         case 2:
-            card = new CardArmoredOgre();
+            card = new CardArmoredOgre(); // common
             break;
         case 3:
-            card = new CardCrocodile();
+            card = new CardCrocodile(); // rare
             break;
         case 4:
-            card = new CardFireBall();
+            card = new CardFireBall(); // common
             break;
         case 5:
-            card = new CardShieldedKnight();
+            card = new CardShieldedKnight(); // rare
             break;
         case 6:
-            card = new CardUndeadKnight();
+            card = new CardUndeadKnight(); // rare
             break;
         case 7:
-            card = new CardBook();
+            card = new CardBook(); // rare
             break;
         case 8:
-            card = new CardShield();
+            card = new CardShield(); // rare
             break;
         case 9:
-            card = new CardBat();
+            card = new CardBat(); // common
             break;
         case 10:
-            card = new CardDragon();
+            card = new CardDragon(); // legendary
             break;
         case 11:
-            card = new CardLegionnaire();
+            card = new CardLegionnaire(); // rare
             break;
         case 12:
-            card = new CardGolem();
+            card = new CardGolem(); // rare
             break;
         case 13:
-            card = new CardGolemite();
+            card = new CardGolemite(); // common
             break;
         case 14:
-            card = new CardBloodStoneGolem();
+            card = new CardBloodStoneGolem(); // legendary
             break;
         case 15:
-            card = new CardBloodSacrifice();
+            card = new CardBloodSacrifice(); // rare
             break;
         case 16:
-            card = new CardBloodRush();
+            card = new CardBloodRush(); // legendary
             break;
         default:
             card = new CardGoblin();
