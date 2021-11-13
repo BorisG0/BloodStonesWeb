@@ -147,6 +147,7 @@ function start() {
 function startDraft() {
     draftableCards = [];
     fillDraftableCards();
+    turnStatus = 2;
 
 }
 
@@ -662,7 +663,6 @@ function mouseClickedBetweenDraft(x, y){
 
 function nextDraft(){
     startDraft();
-    turnStatus = 2;
     
 }
 
