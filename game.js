@@ -1119,9 +1119,10 @@ class CardShield extends CardTargetingSpell{
 class CardBloodRush extends CardTargetingSpell{
     constructor(){
         super("BloodRush", document.getElementById("CardBloodRushImage"), 6);
-        this.cardtext.push("Ready target creature");
-        this.cardtext.push("and give it");
-        this.cardtext.push("+3/-1");
+        this.cardtext.push("Deal 1 Damage");
+        this.cardtext.push("to target creature");
+        this.cardtext.push("and ready it.");
+        this.cardtext.push("It gains +3 attack.");
 
         this.isTargetingActiveCreatures = true;
         this.isTargetingPassiveCreatures = true;
