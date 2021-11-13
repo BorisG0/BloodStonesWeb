@@ -167,7 +167,7 @@ function fillDraftableCards(){
     for(let i = 0; i < 30; i++){
         dfc = [];
         for(let j = 0; j < 5; j++){
-            dfc.push(cardByInt(Math.floor(Math.random() * 16)));
+            dfc.push(cardByInt(Math.floor(Math.random() * 17)));
         }
         draftableCards.push(dfc);
     }
@@ -224,6 +224,9 @@ function cardByInt(n){
             break;
         case 15:
             card = new CardBloodSacrifice();
+            break;
+        case 16:
+            card = new CardBloodRush();
             break;
         default:
             card = new CardGoblin();
@@ -292,6 +295,8 @@ function nextTurn() {
 
 
     activePlayer.drawCard();
+
+    
     activePlayer.readyAllCreatures();
     if(activePlayer.maxStones < 12){
         activePlayer.maxStones++;
@@ -1056,6 +1061,25 @@ class CardShield extends CardTargetingSpell{
     }
 }
 
+class CardBloodRush extends CardTargetingSpell{
+    constructor(){
+        super("BloodRush", document.getElementById("CardBloodRushImage"), 6);
+        this.cardtext.push("Ready target creature");
+        this.cardtext.push("and give it");
+        this.cardtext.push("+3/-1");
+
+        this.isTargetingActiveCreatures = true;
+        this.isTargetingPassiveCreatures = true;
+    }
+
+    effect(target){
+        target.takeHit(1, true);
+        target.attack += 3;
+        target.isReady = true;
+
+    }
+}
+
 
 class CardBook extends Card{
     constructor(){
@@ -1289,8 +1313,8 @@ class CreatureGolem extends Creature {
                 p = activePlayer;
             }
 
-            p.hand.push(new CardGolemite());
-            p.hand.push(new CardGolemite());
+            p.addCardToHand(new CardGolemite());
+            p.addCardToHand(new CardGolemite());
         }
     }
 }
@@ -1358,10 +1382,15 @@ class Player {
         this.fullStones = this.maxStones;
     }
 
+    addCardToHand(card){
+        if(this.hand.length < 8)
+        this.hand.push(card);
+    }
+
     drawCard() {
-        if (this.deck.length > 0) {
-            this.hand.push(this.deck.pop());
-        }
+
+        this.addCardToHand(this.deck.pop());
+
 
     }
 
