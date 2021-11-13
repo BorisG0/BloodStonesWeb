@@ -305,18 +305,20 @@ function castSelected() {
     if (selectedHandCardInt != -1 && activePlayer.fullStones >= activePlayer.hand[selectedHandCardInt].cost) {
         activePlayer.fullStones -= activePlayer.hand[selectedHandCardInt].cost;
 
+        let card = activePlayer.hand[selectedHandCardInt];
+        activePlayer.hand.splice(selectedHandCardInt, 1);
 
-        if (activePlayer.hand[selectedHandCardInt] instanceof CardTargetingSpell) {
+        if (card instanceof CardTargetingSpell) {
 
-            enterSpellTargetingMode(activePlayer.hand[selectedHandCardInt]);
+            enterSpellTargetingMode(card);
 
         } else {
-            activePlayer.hand[selectedHandCardInt].play();
-            activePlayer.discardDeck.push(activePlayer.hand[selectedHandCardInt]);
+            card.play();
+            activePlayer.discardDeck.push(card);
         }
 
         
-        activePlayer.hand.splice(selectedHandCardInt, 1);
+        
         selectedHandCardInt = -1;
     }
 }
