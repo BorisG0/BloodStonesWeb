@@ -203,6 +203,8 @@ function getRarityOfCards(){
     common.push(4);
     common.push(9);
     common.push(13);
+    common.push(18);
+    
 
     let rare = [];
     rare.push(3);
@@ -213,11 +215,13 @@ function getRarityOfCards(){
     rare.push(11);
     rare.push(12);
     rare.push(15);
+    rare.push(19);
 
     let legendary = [];
     legendary.push(10);
     legendary.push(14);
     legendary.push(16);
+    legendary.push(17);
 
 
     allRarityIndexes.push(common);
@@ -281,6 +285,15 @@ function cardByInt(n){
             break;
         case 16:
             card = new CardBloodRush(); // legendary
+            break;
+        case 17:
+            card = new CardBloodDrone(); //legendary
+            break;
+        case 18:
+            card = new CardCrab(); //common
+            break;
+        case 19:
+            card = new CardFlame(); //rare
             break;
         default:
             card = new CardGoblin();
@@ -1289,6 +1302,41 @@ class CardBloodStoneGolem extends CardSpawnCreature {
         this.spawnCreatures.push(new CreatureBloodStoneGolem());
     }
 }
+class CardBloodDrone extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardBloodDroneImage"), 1);
+        this.cardtext.push("Spawn a 2/1");
+        this.cardtext.push("Blood Drone Swarm.");
+        this.cardtext.push("After it attacks, it");
+        this.cardtext.push("drains 2 of your health");
+        this.cardtext.push("and gains +1 attack.");
+        this.spawnCreatures.push(new CreatureBloodDrone());
+    }
+}
+class CardCrab extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardCrabImage"), 1);
+        this.cardtext.push("Spawn a 1/1 crab.");
+        this.cardtext.push("Whenever it attacks and");
+        this.cardtext.push("kills a creature, it");
+        this.cardtext.push("gains a shield.");
+        this.spawnCreatures.push(new CreatureCrab());
+    }
+}
+class CardFlame extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardFlameImage"), 1);
+        this.cardtext.push("Spawn a");
+        this.cardtext.push("1/1 Living Flame.");
+        this.cardtext.push("Add a fireball");
+        this.cardtext.push("to your hand.");
+        this.spawnCreatures.push(new CreatureFlame());
+    }
+    play(){
+        super.play();
+        activePlayer.hand.push(new CardFireBall());
+    }
+}
 
 //----------------------------------------------------------------
 
@@ -1388,6 +1436,41 @@ class CreatureBloodStoneGolem extends Creature {
         if(attackedCreature.defense <= 0){
             activePlayer.hand.push(new CardGolemite());
         }
+    }
+}
+class CreatureBloodDrone extends Creature {
+    constructor(){
+        super("BloodDrone", document.getElementById("CreatureBloodDroneImage"), 2, 1);
+    }
+    attackCreature(attackedCreature) {
+        super.attackCreature(attackedCreature);
+        if(this.defense > 0){
+            activePlayer.takeHit(2, true);
+            this.attack += 1;
+        }
+    }
+    attackPlayer(attackedPlayer){
+        super.attackPlayer(attackedPlayer);
+        if(this.defense > 0){
+            activePlayer.takeHit(2, true);
+            this.attack += 1;
+        }
+    }
+}
+class CreatureCrab extends Creature {
+    constructor(){
+        super("Crab", document.getElementById("CreatureCrabImage"), 1, 1);
+    }
+    attackCreature(attackedCreature) {
+        super.attackCreature(attackedCreature);
+        if(attackedCreature.defense <= 0 && this.defense > 0){
+            this.isShielded = true;
+        }
+    }
+}
+class CreatureFlame extends Creature {
+    constructor(){
+        super("Flame", document.getElementById("CreatureFlameImage"), 1, 1);
     }
 }
 //----------------------------------------------------------------
