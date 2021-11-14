@@ -204,6 +204,8 @@ function getRarityOfCards(){
     common.push(9);
     common.push(13);
     common.push(18);
+    common.push(20);
+    
     
 
     let rare = [];
@@ -222,6 +224,7 @@ function getRarityOfCards(){
     legendary.push(14);
     legendary.push(16);
     legendary.push(17);
+    legendary.push(21);
 
 
     allRarityIndexes.push(common);
@@ -294,6 +297,12 @@ function cardByInt(n){
             break;
         case 19:
             card = new CardFlame(); //rare
+            break;
+        case 20:
+            card = new CardMadKnight(); //common
+            break;
+        case 21:
+            card = new CardDragonKnight(); //legendary
             break;
         default:
             card = new CardGoblin();
@@ -651,6 +660,9 @@ function drawCreature(creature, x, y, size) {
     ctx.fillText(creature.attack, x + size / 8, y + size * Math.sqrt(2), 100);
     ctx.fillText(creature.defense, x + size / 8 * 7, y + size * Math.sqrt(2), 100);
 
+    if(creature.isUndead){
+        ctx.drawImage(document.getElementById("EffectUndeadImage"), x, y, size, size * Math.sqrt(2));
+    }
     if(creature.isShielded){
         ctx.drawImage(document.getElementById("EffectShieldedImage"), x, y, size, size * Math.sqrt(2));
     }
@@ -1337,6 +1349,36 @@ class CardFlame extends CardSpawnCreature {
         activePlayer.hand.push(new CardFireBall());
     }
 }
+class CardMadKnight extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardMadKnightImage"), 2);
+        this.cardtext.push("Spawn a 4/2 Mad Knight.");
+        this.cardtext.push("Whenever it attacks,");
+        this.cardtext.push("it hits YOU as well.");
+        this.spawnCreatures.push(new CreatureMadKnight());
+    }
+}
+class CardDragonKnight extends CardSpawnCreature {
+    constructor(){
+        super("CardCreature", document.getElementById("CardDragonKnightImage"), 3);
+        this.cardtext.push("Spawn a 3/2 Dragon Knight.");
+        this.cardtext.push("Discard your hand.");
+        this.cardtext.push("Add a dragon to your hand,");
+        this.cardtext.push("its cost reduced to 10.");
+        this.spawnCreatures.push(new CreatureDragonKnight());
+    }
+    play(){
+        super.play();
+        while(activePlayer.hand.length > 0){
+            let card = activePlayer.hand[0];
+            activePlayer.hand.splice(0, 1);
+            activePlayer.discardDeck.push(card);
+        }
+        let dragon = new CardDragon();
+        dragon.cost = 10;
+        activePlayer.hand.push(dragon);
+    }
+}
 
 //----------------------------------------------------------------
 
@@ -1471,6 +1513,24 @@ class CreatureCrab extends Creature {
 class CreatureFlame extends Creature {
     constructor(){
         super("Flame", document.getElementById("CreatureFlameImage"), 1, 1);
+    }
+}
+class CreatureMadKnight extends Creature {
+    constructor(){
+        super("MadKnight", document.getElementById("CreatureMadKnightImage"), 4, 2);
+    }
+    attackCreature(attackedCreature) {
+        activePlayer.takeHit(this.attack, true);
+        super.attackCreature(attackedCreature);
+    }
+    attackPlayer(attackedPlayer){
+        activePlayer.takeHit(this.attack, true);
+        super.attackPlayer(attackedPlayer);
+    }
+}
+class CreatureDragonKnight extends Creature {
+    constructor(){
+        super("DragonKnight", document.getElementById("CreatureDragonKnightImage"), 3, 2);
     }
 }
 //----------------------------------------------------------------
