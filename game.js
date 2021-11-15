@@ -1248,7 +1248,7 @@ class CardUndeadKnight extends CardSpawnCreature {
 
 class CardBat extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardBatImage"), 4);
+        super("CardCreature", document.getElementById("CardBatImage"), 2);
         this.cardtext.push("Spawn a");
         this.cardtext.push("1/1 flying Bat.");
         this.spawnCreatures.push(new CreatureBat());
