@@ -421,9 +421,13 @@ function repaint() {
             drawDraftableCardSelection();
         }
 
-        ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
+        //ctx.drawImage(document.getElementById("CastingFieldImage"), canvas.width / 2 - castingFieldSize / 2, canvas.height / 2 - castingFieldSizeY / 2, castingFieldSize, castingFieldSizeY);
 
-        ctx.drawImage(activePlayer.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 + castingFieldSizeY, handCardSize, handCardSizeY);
+        ctx.drawImage(activePlayer.image, 0, 0, handCardSize, handCardSizeY);
+
+        //ctx.drawImage(activePlayer.image, canvas.width / 2 - handCardSize / 2, canvas.height / 2 + castingFieldSizeY, handCardSize, handCardSizeY);
+
+        drawDraftedDeck();
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
@@ -551,6 +555,27 @@ function repaint() {
         ctx.fillText("won", canvas.width / 2 - handCardSize / 2, canvas.height / 2 - handCardSizeY / 2);
     }
 
+}
+
+function drawDraftedDeck(){
+    let deck = activePlayer.deck;
+    let yDiff = 0;
+    let xDiff;
+
+    for(let i = 0; i < deck.length; i++){
+
+        xDiff = i;
+        if(i > 9){
+            yDiff = deckSizeY + deckSizeY/10;
+            xDiff = i - 10;
+        } 
+        if(i > 19){
+            yDiff = (deckSizeY + deckSizeY/10) * 2;
+            xDiff = i - 20;
+        } 
+
+        drawCard(deck[i], 0 + xDiff * (deckSize + deckSize/10) + deckSize/10, canvas.height/4 + deckSizeY/2 + yDiff, deckSize);
+    }
 }
 
 function drawDraftableCards() {
@@ -742,6 +767,7 @@ function mouseClickedDraft(x, y){
                 selectedDraftableCardInt = -1;
             } else {
                 selectedDraftableCardInt = selectedDraftableCardIntTemp;
+                draftSelected();
     
             }
         }
