@@ -576,6 +576,19 @@ function drawStones() {
 
         ctx.drawImage(image, i * stoneSize, canvas.height / 2 - stoneSize / 2, stoneSize, stoneSize);
     }
+
+    if(selectedHandCardInt != -1){
+
+        let rStones = activePlayer.hand[selectedHandCardInt].cost;
+        let image = document.getElementById("RequiredStoneImage");
+
+        for (let i = 0; i < rStones; i++) {
+    
+            ctx.drawImage(image, i * stoneSize, canvas.height / 2 - stoneSize / 2, stoneSize, stoneSize);
+        }
+
+
+    }
 }
 
 function drawHandCardSelection() {
