@@ -4,6 +4,8 @@ var sizeMultiplier = 1;
 
 var gameFont = 'arial';
 
+var logoSize, logoSizeY;
+
 var handCardSize = 150 * sizeMultiplier;
 var handCardSizeY = handCardSize * Math.sqrt(2);
 var handCardGap = 10 * sizeMultiplier;
@@ -36,6 +38,9 @@ var stoneSize = 60 * sizeMultiplier;
 
 function setSizes(){
     sizeMultiplier = canvas.width/1920;
+
+    logoSize = 1000 * sizeMultiplier;
+    logoSizeY = logoSize /20 * 8;
 
     handCardSize = 150 * sizeMultiplier;
     handCardSizeY = handCardSize * Math.sqrt(2);
@@ -78,7 +83,7 @@ var activePlayer, passivePlayer;
 var selectedHandCardInt = -1;
 var selectedActiveCreatureInt = -1;
 
-var turnStatus = 4; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen,      4 = between drafts
+var turnStatus = -1; //1 = mid turn,     0 = between turns,     2 = draft,      3 = winning screen,      4 = between drafts,     -1 = starting screen
 
 var winner, loser;
 
@@ -394,6 +399,12 @@ function checkWin() {
 function repaint() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
+    if(turnStatus == -1){ //startscreen
+        ctx.drawImage(document.getElementById("BloodStonesLogoImage"), canvas.width/2 - logoSize/2, 0, logoSize, logoSizeY);
+        ctx.drawImage(document.getElementById("StartImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
+    }
+
+
     if (turnStatus == 2) { //Draft
 
         if(draftTurn < draftableCards.length)
@@ -688,6 +699,8 @@ function mouseClicked(event) {
         mouseClickedDraft(x, y);
     } else if (turnStatus == 4){
         mouseClickedBetweenDraft(x, y);
+    } else if (turnStatus == -1){
+        mouseClickedStartScreen(x, y);
     }
 
 
@@ -904,6 +917,14 @@ function clickedPassivePlayer(x, y) {
             activePlayer.creatures[selectedActiveCreatureInt].attackPlayer(passivePlayer);
             selectedActiveCreatureInt = -1;
         }
+    }
+}
+
+function mouseClickedStartScreen(x, y){
+    if ((y >= (canvas.height / 2 - turnButtonSizeY / 2)) && (y <= (canvas.height / 2 + turnButtonSizeY / 2)) //turnbutton clicked
+        && x > canvas.width - turnButtonSize) {
+            if(!isTargetingMode)
+                turnStatus = 4;
     }
 }
 
