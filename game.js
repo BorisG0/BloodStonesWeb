@@ -1203,7 +1203,7 @@ class Creature {
 
 class CardFireBall extends CardTargetingSpell {
     constructor() {
-        super("FireBall", document.getElementById("CardFireBallImage"), 2);
+        super("CardFireBall", document.getElementById("CardFireBallImage"), 2);
         this.cardtext.push("Deal 3 Damage");
         this.cardtext.push("to target enemy.");
 
@@ -1218,7 +1218,7 @@ class CardFireBall extends CardTargetingSpell {
 
 class CardShield extends CardTargetingSpell{
     constructor(){
-        super("Shield", document.getElementById("CardShieldImage"), 1);
+        super("CardShield", document.getElementById("CardShieldImage"), 1);
         this.cardtext.push("Shield target");
         this.cardtext.push("creature.");
 
@@ -1233,7 +1233,7 @@ class CardShield extends CardTargetingSpell{
 
 class CardBloodRush extends CardTargetingSpell{
     constructor(){
-        super("BloodRush", document.getElementById("CardBloodRushImage"), 6);
+        super("CardBloodRush", document.getElementById("CardBloodRushImage"), 6);
         this.cardtext.push("Deal 1 Damage");
         this.cardtext.push("to target creature");
         this.cardtext.push("and ready it.");
@@ -1254,7 +1254,7 @@ class CardBloodRush extends CardTargetingSpell{
 
 class CardBook extends Card{
     constructor(){
-        super("Book", document.getElementById("CardBookImage"), 5);
+        super("CardBook", document.getElementById("CardBookImage"), 5);
         this.cardtext.push("Draw 3 Cards.");
     }
 
@@ -1267,7 +1267,7 @@ class CardBook extends Card{
 
 class CardBloodSacrifice extends Card{
     constructor(){
-        super("BloodSacrifice", document.getElementById("CardBloodSacrificeImage"), 0);
+        super("CardBloodSacrifice", document.getElementById("CardBloodSacrificeImage"), 0);
         this.cardtext.push("Fill your Bloodstones");
         this.cardtext.push("and take 6 Damage.");
     }
@@ -1367,7 +1367,7 @@ class CardLegionnaire extends CardSpawnCreatureAndTargetingSpell{
 }
 class CardLegionnaireAccompanyingSpell extends CardSpawnCreatureAccompanyingSpell{
     constructor(){
-        super("LegionnaireTaunt", document.getElementById("CardLegionnaireImage"), 0);
+        super("CardLegionnaireTaunt", document.getElementById("CardLegionnaireImage"), 0);
 
         this.isTargetingPassiveCreatures = true;
         this.isTargetingActiveCreatures = true;
