@@ -206,6 +206,8 @@ function getRarityOfCards(){
     common.push(1);
     common.push(2);
     common.push(4);
+    common.push(5);
+    common.push(6);
     common.push(9);
     common.push(13);
     common.push(18);
@@ -215,8 +217,6 @@ function getRarityOfCards(){
 
     let rare = [];
     rare.push(3);
-    rare.push(5);
-    rare.push(6);
     rare.push(7);
     rare.push(8);
     rare.push(11);
@@ -259,10 +259,10 @@ function cardByInt(n){
             card = new CardFireBall(); // common
             break;
         case 5:
-            card = new CardShieldedKnight(); // rare
+            card = new CardShieldedKnight(); // common
             break;
         case 6:
-            card = new CardUndeadKnight(); // rare
+            card = new CardUndeadKnight(); // common
             break;
         case 7:
             card = new CardBook(); // rare
