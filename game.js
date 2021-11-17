@@ -808,7 +808,37 @@ function draftFillRandom(){
 function draftSelected(){
 
     if(selectedDraftableCardInt != -1){
-        activePlayer.deck.push(draftableCards[draftTurn][selectedDraftableCardInt]);
+
+        let deck = activePlayer.deck;
+        let card = draftableCards[draftTurn][selectedDraftableCardInt];
+
+        
+
+        for(let i = 0; i < deck.length; i++){
+            
+            if((deck[i].cost >= card.cost) && deck[i].name >= card.name){
+                deck.splice(i, 0, card);
+                break;
+            }
+
+            if(deck[i].cost > card.cost){
+                deck.splice(i, 0, card);
+                break;
+            }
+
+            if(i == deck.length -1){
+                deck.push(card);
+                break;
+            }
+
+        }
+
+        if(deck.length == 0){
+            deck.push(card);
+        }
+
+
+        //activePlayer.deck.push(draftableCards[draftTurn][selectedDraftableCardInt]);
         selectedDraftableCardInt = -1;
         draftTurn++;
     }
