@@ -1310,7 +1310,7 @@ class CardArmoredOgre extends CardSpawnCreature {
 
 class CardCrocodile extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardCrocodileImage"), 5);
+        super("CardCrocodile", document.getElementById("CardCrocodileImage"), 5);
         this.cardtext.push("Spawn a");
         this.cardtext.push("4/4 Crocodile");
         this.cardtext.push("with Bloodthirst.");
@@ -1320,7 +1320,7 @@ class CardCrocodile extends CardSpawnCreature {
 
 class CardShieldedKnight extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardShieldedKnightImage"), 3);
+        super("CardShieldedKnight", document.getElementById("CardShieldedKnightImage"), 3);
         this.cardtext.push("Spawn a");
         this.cardtext.push("2/2 Shielded Knight.");
         this.spawnCreatures.push(new CreatureShieldedKnight());
@@ -1329,7 +1329,7 @@ class CardShieldedKnight extends CardSpawnCreature {
 
 class CardUndeadKnight extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardUndeadKnightImage"), 3);
+        super("CardUndeadKnight", document.getElementById("CardUndeadKnightImage"), 3);
         this.cardtext.push("Spawn a");
         this.cardtext.push("2/2 Undead Knight.");
         this.spawnCreatures.push(new CreatureUndeadKnight());
@@ -1338,7 +1338,7 @@ class CardUndeadKnight extends CardSpawnCreature {
 
 class CardBat extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardBatImage"), 2);
+        super("CardBat", document.getElementById("CardBatImage"), 2);
         this.cardtext.push("Spawn a");
         this.cardtext.push("1/1 flying Bat.");
         this.spawnCreatures.push(new CreatureBat());
@@ -1346,7 +1346,7 @@ class CardBat extends CardSpawnCreature {
 }
 class CardDragon extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardDragonImage"), 12);
+        super("CardDragon", document.getElementById("CardDragonImage"), 12);
         this.cardtext.push("Spawn a");
         this.cardtext.push("12/12 Dragon.");
         this.spawnCreatures.push(new CreatureDragon());
@@ -1354,7 +1354,7 @@ class CardDragon extends CardSpawnCreature {
 }
 class CardLegionnaire extends CardSpawnCreatureAndTargetingSpell{
     constructor(){
-        super("Legionnaire", document.getElementById("CardLegionnaireImage"), 3, new CardLegionnaireAccompanyingSpell());
+        super("CardLegionnaire", document.getElementById("CardLegionnaireImage"), 3, new CardLegionnaireAccompanyingSpell());
         this.cardtext.push("Spawn a 2/3 Legionnaire.");
         this.cardtext.push("Give another creature");
         this.cardtext.push("Taunt.");
@@ -1379,7 +1379,7 @@ class CardLegionnaireAccompanyingSpell extends CardSpawnCreatureAccompanyingSpel
 }
 class CardGolem extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardGolemImage"), 8);
+        super("CardGolem", document.getElementById("CardGolemImage"), 8);
         this.cardtext.push("Spawn a 6/7 Golem.");
         this.cardtext.push("When it dies, add 2");
         this.cardtext.push("Golemites to your hand.");
@@ -1388,7 +1388,7 @@ class CardGolem extends CardSpawnCreature {
 }
 class CardGolemite extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardGolemiteImage"), 4);
+        super("CardGolemite", document.getElementById("CardGolemiteImage"), 4);
         this.cardtext.push("Spawn a");
         this.cardtext.push("3/3 Golemite.");
         this.spawnCreatures.push(new CreatureGolemite());
@@ -1396,7 +1396,7 @@ class CardGolemite extends CardSpawnCreature {
 }
 class CardBloodStoneGolem extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardBloodStoneGolemImage"), 8);
+        super("CardBloodstoneGolem", document.getElementById("CardBloodStoneGolemImage"), 8);
         this.cardtext.push("Spawn a 7/6 Golem.");
         this.cardtext.push("Whenever it attacks and");
         this.cardtext.push("kills a creature, add a");
@@ -1406,7 +1406,7 @@ class CardBloodStoneGolem extends CardSpawnCreature {
 }
 class CardBloodDrone extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardBloodDroneImage"), 1);
+        super("CardBloodDrone", document.getElementById("CardBloodDroneImage"), 1);
         this.cardtext.push("Spawn a 2/1");
         this.cardtext.push("Blood Drone Swarm.");
         this.cardtext.push("After it attacks, it");
@@ -1417,7 +1417,7 @@ class CardBloodDrone extends CardSpawnCreature {
 }
 class CardCrab extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardCrabImage"), 1);
+        super("CardCrab", document.getElementById("CardCrabImage"), 1);
         this.cardtext.push("Spawn a 1/1 crab.");
         this.cardtext.push("Whenever it attacks and");
         this.cardtext.push("kills a creature, it");
@@ -1427,7 +1427,7 @@ class CardCrab extends CardSpawnCreature {
 }
 class CardFlame extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardFlameImage"), 1);
+        super("CardFlame", document.getElementById("CardFlameImage"), 1);
         this.cardtext.push("Spawn a");
         this.cardtext.push("1/1 Living Flame.");
         this.cardtext.push("Add a fireball");
@@ -1441,7 +1441,7 @@ class CardFlame extends CardSpawnCreature {
 }
 class CardMadKnight extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardMadKnightImage"), 2);
+        super("CardMadKnight", document.getElementById("CardMadKnightImage"), 2);
         this.cardtext.push("Spawn a 4/2 Mad Knight.");
         this.cardtext.push("Whenever it attacks,");
         this.cardtext.push("it hits YOU as well.");
@@ -1450,7 +1450,7 @@ class CardMadKnight extends CardSpawnCreature {
 }
 class CardDragonKnight extends CardSpawnCreature {
     constructor(){
-        super("CardCreature", document.getElementById("CardDragonKnightImage"), 3);
+        super("CardDragonKnight", document.getElementById("CardDragonKnightImage"), 3);
         this.cardtext.push("Spawn a 3/2 Dragon Knight.");
         this.cardtext.push("Discard your hand.");
         this.cardtext.push("Add a dragon to your hand,");
