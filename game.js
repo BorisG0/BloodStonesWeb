@@ -223,6 +223,7 @@ function getRarityOfCards(){
     rare.push(12);
     rare.push(15);
     rare.push(19);
+    rare.push(22);
 
     let legendary = [];
     legendary.push(10);
@@ -308,6 +309,9 @@ function cardByInt(n){
             break;
         case 21:
             card = new CardDragonKnight(); //legendary
+            break;
+        case 22:
+            card = new CardForcePush(); //rare
             break;
         default:
             card = new CardGoblin();
@@ -1265,6 +1269,23 @@ class CardBook extends Card{
     }
 }
 
+class CardForcePush extends Card{
+    constructor(){
+        super("CardForcePush", document.getElementById("CardForcePushImage"), 4);
+        this.cardtext.push("Deal 2 Damage");
+        this.cardtext.push("to everything.");
+        this.damage = 2;
+    }
+
+    play(){
+        activePlayer.takeHit(this.damage);
+        passivePlayer.takeHit(this.damage);
+
+        activePlayer.creatures.forEach(c => c.takeHit(this.damage));
+        passivePlayer.creatures.forEach(c => c.takeHit(this.damage));
+    }
+}
+
 class CardBloodSacrifice extends Card{
     constructor(){
         super("CardBloodSacrifice", document.getElementById("CardBloodSacrificeImage"), 0);
@@ -1685,16 +1706,25 @@ class Player {
 
     checkDeaths() {
         //selectedHandCardInt = 1;
-        for (let i = 0; i < this.creatures.length; i++) {
-            if (this.creatures[i].defense <= 0) {
-                if(this.creatures[i].isUndead){ //Creature respawns upon death
-                    this.creatures[i].defense = 1;
-                    this.creatures[i].isUndead = false;
-                    this.spawnCreature(this.creatures[i]);
+
+        let rerun = true;
+
+        while(rerun){
+            rerun = false;
+            for (let i = 0; i < this.creatures.length; i++) {
+                if (this.creatures[i].defense <= 0) {
+                    if(this.creatures[i].isUndead){ //Creature respawns upon death
+                        this.creatures[i].defense = 1;
+                        this.creatures[i].isUndead = false;
+                        this.spawnCreature(this.creatures[i]);
+                    }
+                    this.creatures.splice(i, 1);
+                    rerun = true;
                 }
-                this.creatures.splice(i, 1);
             }
         }
+
+        
     }
 
     readyAllCreatures() {
