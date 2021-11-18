@@ -397,6 +397,10 @@ function checkWin() {
         winner = activePlayer;
         loser = passivePlayer;
         turnStatus = 3;
+    }else if(activePlayer.health <= 0){
+        winner = passivePlayer;
+        loser = activePlayer;
+        turnstatus = 3;
     }
 }
 
@@ -721,6 +725,9 @@ function drawCreature(creature, x, y, size) {
     }
     if(creature.isTaunt){
         ctx.drawImage(document.getElementById("EffectTauntImage"), x, y, size, size * Math.sqrt(2));
+    }
+    if(creature.isFlying){
+        ctx.drawImage(document.getElementById("EffectFlyingImage"), x, y, size, size * Math.sqrt(2));
     }
 
 
@@ -1052,6 +1059,8 @@ function mouseClickedMidTurn(x, y) {
 
     activePlayer.checkDeaths();
     passivePlayer.checkDeaths();
+
+    checkWin();
 
 }
 
@@ -1735,7 +1744,6 @@ class Player {
 
     takeHit(damage, gotAttacked) {
         this.health -= damage;
-        checkWin();
     }
 
 }
