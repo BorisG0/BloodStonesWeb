@@ -440,9 +440,9 @@ function repaint() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillStyle = 'white';
-        ctx.font = '25px arial';
+        ctx.font = creatureFont;
 
-        ctx.fillText(activePlayer.deck.length + "/" + maxDeckSize, canvas.width/2, canvas.height / 2 + castingFieldSizeY);
+        ctx.fillText(activePlayer.deck.length + "/" + maxDeckSize, handCardSize/2, handCardSizeY);
 
         ctx.drawImage(document.getElementById("FillRandomImage"), canvas.width - turnButtonSize, canvas.height / 2 - turnButtonSizeY / 2, turnButtonSize, turnButtonSizeY);
 
